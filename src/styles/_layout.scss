@@ -1,0 +1,30 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-4);
+  }
+  
+  .section { padding: var(--space-6) 0; }
+  .card {
+    background: var(--mat-sys-surface);
+    border: 1px solid rgba(0,0,0,.08);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-1);
+    padding: var(--space-4);
+  }
+  
+  /* Simple grids */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: var(--space-4);
+  }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: var(--space-4);
+  }
+  @media (max-width: 900px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  }
+  

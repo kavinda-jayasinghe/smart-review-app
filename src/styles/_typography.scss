@@ -1,0 +1,8 @@
+h1,h2,h3 { margin: var(--space-4) 0 var(--space-2); }
+p { margin: 0 0 var(--space-3); }
+
+/* Sizes that pair with Material tokens */
+.h1 { font: var(--mat-sys-headline-large); }
+.h2 { font: var(--mat-sys-headline-medium); }
+.h3 { font: var(--mat-sys-headline-small); }
+.muted { color: var(--mat-sys-on-surface-variant); }
