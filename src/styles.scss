@@ -1,7 +1,6 @@
-// Angular Material v18+ theming (Material 3)
-@use '@angular/material' as mat;
+@use '@angular/material' as mat; // keep your Material M3 theme here
 
-// --- App Theme (light) ---
+/* 1) Material theme (already in your file) */
 html {
   @include mat.theme((
     color: (
@@ -13,49 +12,18 @@ html {
   ));
 }
 
-// System-level defaults
+/* 2) Base surface + font */
 body {
-  color-scheme: light; // change to `light dark` to follow OS, or `dark` to force dark
-  background-color: var(--mat-sys-surface);
+  color-scheme: light;
+  background: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
-  margin: 0; // reset UA margin
+  margin: 0;
 }
 
-// Global base
-html, body { height: 100%; }
-body { font-family: Roboto, "Helvetica Neue", sans-serif; }
-
-// ---- Simple utility classes (no Tailwind) ----
-:root { --app-gap: 1rem; }
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: var(--app-gap);
-}
-
-.grid-2 {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--app-gap);
-}
-
-.grid-3 {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--app-gap);
-}
-
-.card {
-  background: var(--mat-sys-surface);
-  border: 1px solid rgba(0,0,0,0.08);
-  border-radius: 12px;
-  padding: 16px;
-}
-
-// Full-bleed helper (edge-to-edge section)
-.full-bleed {
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
-}
+/* 3) Import your partials */
+@import 'styles/_tokens';
+@import 'styles/_reset';
+@import 'styles/_typography';
+@import 'styles/_layout';
+@import 'styles/_utilities';
