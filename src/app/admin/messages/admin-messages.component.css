@@ -1,0 +1,106 @@
+.messages-wrapper {
+  max-width: 800px;
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #0a0a0a;
+  margin-bottom: 16px;
+}
+
+.search-box-msg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 10px 12px;
+  max-width: 600px;
+  margin-bottom: 16px;
+}
+
+.search-icon {
+  font-size: 16px;
+  color: #4a5568;
+}
+
+.search-input {
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  width: 100%;
+  outline: none;
+  color: #0a0a0a;
+}
+
+.thread-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.thread-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-top: 1px solid #f1f1f1;
+}
+
+.thread-row:first-child {
+  border-top: 1px solid transparent;
+}
+
+.left-side {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.avatar-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  overflow: hidden;
+  background-color: #fde7da; /* just a soft bg like your screenshot */
+  border: 1px solid #d1d5db;
+  flex-shrink: 0;
+}
+
+.avatar-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.text-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sender-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sender-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: #0a0a0a;
+}
+
+.last-message {
+  font-size: 15px;
+  font-weight: 400;
+  color: #4a5568;
+}
+
+.time-label {
+  font-size: 14px;
+  color: #4a5568;
+  flex-shrink: 0;
+}

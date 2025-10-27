@@ -1,0 +1,31 @@
+<section class="messages-wrapper">
+  <h1 class="page-title">Messages</h1>
+
+  <div class="search-box-msg">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" placeholder="Search" />
+  </div>
+
+  <ul class="thread-list">
+    <li class="thread-row" *ngFor="let t of threads">
+      <div class="left-side">
+        <div class="avatar-circle">
+          <img
+            src="https://i.pravatar.cc/40"
+            alt="avatar"
+          />
+        </div>
+
+        <div class="text-block">
+          <div class="sender-line">
+            <span class="sender-name">{{ t.senderName }}</span>
+          </div>
+
+          <div class="last-message">{{ t.lastMessage }}</div>
+        </div>
+      </div>
+
+      <div class="time-label">{{ t.timeLabel }}</div>
+    </li>
+  </ul>
+</section>
