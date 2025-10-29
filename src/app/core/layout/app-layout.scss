@@ -1,37 +1,118 @@
-.header {
-  background: #1976d2;
-  color: white;
-  padding: 1rem 2rem;
+:root {
+  --ink: #111827;
+  --muted: #6b7280;
+  --line: rgba(0, 0, 0, .06);
+  --bg: var(--mat-sys-surface, #f7f7f8);
+  --white: #fff;
+}
+
+/* Shell */
+.shell {
+  min-height: 100vh;
   display: flex;
-  justify-content: space-between;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+/* Sidebar */
+.aside {
+  width: 240px;
+  background: var(--white);
+  color: var(--ink);
+  padding: 16px;
+  border-right: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .03);
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 18px;
+  margin: 4px 0 16px;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.section-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 8px 0 4px;
+}
+
+.link {
+  color: var(--ink);
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: 12px;
+  display: block;
+  transition: background .15s ease;
+}
+.link:hover { background: #f3f4f6; }
+.link.active { background: rgba(99,102,241,.10); color: #1f2937; }
+
+/* Main area */
+.main { flex: 1; }
+
+.header {
+  height: 56px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
   align-items: center;
-
-  h1 {
-    margin: 0;
-    font-size: 1.5rem;
-  }
-
-  nav a {
-    color: white;
-    text-decoration: none;
-    margin-left: 1.5rem;
-    font-weight: 500;
-  }
-
-  nav a:hover {
-    text-decoration: underline;
-  }
+  justify-content: space-between;
+  padding: 0 16px;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 10;
 }
 
-main {
-  flex: 1;
-  padding: 2rem;
+.spacer { flex: 1; }
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.footer {
-  text-align: center;
-  padding: 1rem;
-  background: #f5f5f5;
-  color: #666;
-  font-size: 0.9rem;
+.hdr-link {
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 600;
+}
+.hdr-link:hover { text-decoration: underline; }
+
+.menu-btn {
+  display: none;
+  gap: 6px;
+  align-items: center;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: var(--ink);
+}
+
+.content {
+  padding: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Mobile */
+@media (max-width: 900px) {
+  .aside { display: none; }
+  .aside.open {
+    display: block;
+    position: fixed;
+    inset: 56px auto 0 0; /* below header */
+    z-index: 20;
+    box-shadow: 0 10px 30px rgba(0,0,0,.15);
+  }
+  .menu-btn { display: inline-flex; }
 }
