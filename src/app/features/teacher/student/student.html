@@ -1,0 +1,38 @@
+<!-- Tabs header is outside this component in your page. This is the Students body. -->
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <div class="search">
+    <span class="mi">search</span>
+    <input type="text" [(ngModel)]="q" placeholder="Search students" />
+  </div>
+
+  <button class="btn primary" (click)="addStudent()">Add Student</button>
+</div>
+
+<!-- Table -->
+<div class="table-wrap">
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Average Marks</th>
+      <th>Completed Assignments</th>
+      <th>Total Assignments</th>
+      <th class="th-actions">Actions</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr *ngFor="let s of filtered()">
+      <td>{{ s.name }}</td>
+      <td>{{ s.avg }}%</td>
+      <td>{{ s.completed }}</td>
+      <td>{{ s.total }}</td>
+      <td class="actions">
+        <a class="action-link" (click)="viewMore(s)">View More</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

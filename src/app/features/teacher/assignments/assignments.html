@@ -1,17 +1,4 @@
-<!-- breadcrumb -->
-<div class="breadcrumb">
-  <a class="crumb">Classes</a>
-  <span class="sep">/</span>
-  <span class="crumb current">{{ title }}</span>
-</div>
 
-<!-- tabs -->
-<div class="tabs">
-  <a routerLink="../overview" class="tab">Overview</a>
-  <a routerLink="../topics" class="tab">Topics</a>
-  <button class="tab active">Assignments</button>
-  <a routerLink="../students" class="tab">Students</a>
-</div>
 
 <!-- toolbar -->
 <div class="toolbar">
@@ -19,7 +6,7 @@
     <span class="material-icons">search</span>
     <input type="text" [(ngModel)]="q" placeholder="Search assignments" />
   </div>
-  <button class="btn primary" (click)="onAddAssignment()">Add Assignment</button>
+  <button class="btn primary" (click)="onAddAssignment(addAssignment)">Add Assignment</button>
 </div>
 
 <!-- table -->
@@ -54,3 +41,14 @@
     </tbody>
   </table>
 </div>
+
+
+<ng-template #addAssignment let-modal>
+  <div class="modal-header">
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+<app-add-assignment></app-add-assignment>
+  </div>
+
+</ng-template>

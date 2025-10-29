@@ -24,9 +24,6 @@ export class Dashboard {
   tab: Tab = 'overview';
 
 
-
-
-
   setTab(t: Tab) { this.tab = t; }
   is(t: Tab) { return this.tab === t; }
 }

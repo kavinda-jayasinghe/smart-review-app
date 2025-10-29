@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';              // <- add this
 import { ReactiveFormsModule } from '@angular/forms';
@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
+import { AddAssignment } from "../add-assignment/add-assignment";
 
 type Tab = 'overview' | 'topics' | 'assignments' | 'students';
 interface AssignmentRow {
@@ -27,12 +28,16 @@ interface AssignmentRow {
   standalone: true,
   imports: [
     CommonModule, FormsModule, ReactiveFormsModule, RouterLink,
-    MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatListModule
-  ],
+    MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatListModule,
+    AddAssignment
+],
   templateUrl: './assignments.html',
   styleUrls: ['./assignments.scss'],
 })
 export class Assignments {
+  //   constructor(
+  //   private modalService: NgbModal
+  // ) { }
   title = 'Grade 10 Maths';
   tab: Tab = 'assignments';
 
@@ -56,8 +61,12 @@ export class Assignments {
   setTab(t: Tab) { this.tab = t; }
   is(t: Tab) { return this.tab === t; }
 
-  onAddAssignment() {
-    // later open dialog or navigate
-    alert('Add Assignment clicked');
+  //   onAddAssignment(ngTemplate: TemplateRef<any>): void {
+  //   this.modalService.open(ngTemplate, { centered: true, size: 'sm' });
+  // }
+
+      onAddAssignment(ngTemplate: TemplateRef<any>): void {
+    // this.modalService.open(ngTemplate, { centered: true, size: 'sm' });
   }
+
 }

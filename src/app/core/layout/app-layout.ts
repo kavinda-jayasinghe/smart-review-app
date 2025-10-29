@@ -41,7 +41,7 @@ import { AuthService } from '../services/auth.service';
       <div class="brand">StudyReview</div>
       <nav class="nav">
         <div class="section-label">Student</div>
-        <a routerLink="/" routerLinkActive="active" class="link">Home</a>
+        <a routerLink="/home" routerLinkActive="active" class="link">Home</a>
         <a routerLink="/app/teacher/dashboard" routerLinkActive="active" class="link">Classes</a>
         <a routerLink="/app" routerLinkActive="active" class="link">Messages</a>
       </nav>
