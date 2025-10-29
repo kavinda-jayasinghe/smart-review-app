@@ -15,46 +15,13 @@
 
 <!-- Overview -->
 <section *ngIf="is('overview')" class="overview">
-  <div class="metrics">
-    <div class="card" *ngFor="let m of metrics">
-      <div class="label">{{ m.label }}</div>
-      <div class="value">{{ m.value }}</div>
-      <div class="sub" *ngIf="m.sub">{{ m.sub }}</div>
-    </div>
-  </div>
-
-  <h2 class="section-title">Today at a glance, Assignments (Next 7 Days)</h2>
-
-  <div class="table-wrap">
-    <table class="table">
-      <thead>
-      <tr>
-        <th>Assignment</th>
-        <th>Topic</th>
-        <th>Due</th>
-        <th>Status</th>
-        <th>Submissions</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let r of upcoming">
-        <td>{{ r.assignment }}</td>
-        <td>{{ r.topic }}</td>
-        <td>{{ r.due }}</td>
-        <td>
-          <span class="badge">{{ r.status }}</span>
-        </td>
-        <td>{{ r.submissions }}</td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
+<app-overview></app-overview>
 </section>
 
 <!-- Topics placeholder -->
 <section *ngIf="is('topics')" class="placeholder">
   <h3>Topics</h3>
-  <p>Show syllabus units, progress bars, and upcoming lessons here.</p>
+<app-topic></app-topic>
 </section>
 
 <!-- Assignments placeholder -->
@@ -66,5 +33,5 @@
 <!-- Students placeholder -->
 <section *ngIf="is('students')" class="placeholder">
   <h3>Students</h3>
-  <p>Roster, status, and quick actions here.</p>
+<app-students></app-students>
 </section>
