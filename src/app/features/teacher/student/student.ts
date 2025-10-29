@@ -1,46 +1,53 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
-type Status = 'active' | 'inactive'; // future use
-interface StudentRow {
+
+export interface StudentRow {
   name: string;
   avg: number;           // percentage
   completed: number;
   total: number;
 }
+
 @Component({
-    standalone: true,
   selector: 'app-student',
-  imports: [CommonModule,ReactiveFormsModule],
+  standalone: true,
+  imports: [FormsModule],    
   templateUrl: './student.html',
   styleUrl: './student.scss',
 })
-export class Student {
+export class StudentComponent {
+  
+/** Search query */
+  q = '';
 
- q = '';
-
+  /** Sample data */
   rows: StudentRow[] = [
-    { name: 'Ethan Harper',  avg: 85, completed: 20, total: 25 },
-    { name: 'Olivia Bennett',avg: 92, completed: 18, total: 20 },
-    { name: 'Noah Carter',   avg: 78, completed: 15, total: 20 },
-    { name: 'Ava Morgan',    avg: 90, completed: 22, total: 25 },
-    { name: 'Liam Foster',   avg: 88, completed: 10, total: 10 },
+    { name: 'Ethan Harper',    avg: 85, completed: 20, total: 25 },
+    { name: 'Olivia Bennett',  avg: 92, completed: 18, total: 20 },
+    { name: 'Noah Carter',     avg: 78, completed: 15, total: 20 },
+    { name: 'Ava Morgan',      avg: 90, completed: 22, total: 25 },
+    { name: 'Liam Foster',     avg: 88, completed: 10, total: 10 },
   ];
 
-  filtered() {
-    const t = this.q.trim().toLowerCase();
-    return !t ? this.rows :
-      this.rows.filter(r => r.name.toLowerCase().includes(t));
+  /** Filter logic */
+  filtered(): StudentRow[] {
+    const query = this.q.trim().toLowerCase();
+    if (!query) return this.rows;
+    return this.rows.filter(s => s.name.toLowerCase().includes(query));
   }
 
-  addStudent() {
-    // hook up to dialog or route later
+  /** Actions */
+  addStudent(): void {
     alert('Add Student clicked');
   }
 
-  viewMore(s: StudentRow) {
-    // navigate to profile page later
-    alert(`View ${s.name}`);
+  viewMore(student: StudentRow): void {
+    alert(`View ${student.name}`);
+  }
+
+  /** trackBy function – MUST accept index and item */
+  trackByName(index: number, student: StudentRow): string {
+    return student.name;
   }
 }

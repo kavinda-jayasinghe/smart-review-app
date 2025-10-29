@@ -27,7 +27,7 @@ interface AssignmentRow {
   selector: 'app-assignments',
   standalone: true,
   imports: [
-    CommonModule, FormsModule, ReactiveFormsModule, RouterLink,
+    CommonModule, FormsModule, ReactiveFormsModule,
     MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatListModule,
     AddAssignment
 ],

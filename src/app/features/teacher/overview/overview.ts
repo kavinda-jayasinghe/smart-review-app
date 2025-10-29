@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 interface Metric { label: string; value: string; }
 interface GlanceItem {
   icon: 'class' | 'assignment' | 'bookmark';
@@ -8,7 +9,7 @@ interface GlanceItem {
 }
 @Component({
   selector: 'app-overview',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './overview.html',
   styleUrl: './overview.scss',
 })
