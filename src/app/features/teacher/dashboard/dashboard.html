@@ -1,0 +1,37 @@
+<!-- Top bar could be part of your app shell. Below is the page body. -->
+<div class="breadcrumb">
+  <a class="crumb">Classes</a>
+  <span class="sep">/</span>
+  <span class="crumb current">{{ title }}</span>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab" [class.active]="is('overview')" (click)="setTab('overview')">Overview</button>
+  <button class="tab" [class.active]="is('topics')" (click)="setTab('topics')">Topics</button>
+  <button class="tab" [class.active]="is('assignments')" (click)="setTab('assignments')">Assignments</button>
+  <button class="tab" [class.active]="is('students')" (click)="setTab('students')">Students</button>
+</div>
+
+<!-- Overview -->
+<section *ngIf="is('overview')" class="overview">
+<app-overview></app-overview>
+</section>
+
+<!-- Topics placeholder -->
+<section *ngIf="is('topics')" class="placeholder">
+  <h3>Topics</h3>
+<app-topic></app-topic>
+</section>
+
+<!-- Assignments placeholder -->
+<section *ngIf="is('assignments')" class="placeholder">
+  <h3>Assignments</h3>
+<app-assignments></app-assignments>
+</section>
+
+<!-- Students placeholder -->
+<section *ngIf="is('students')" class="placeholder">
+  <h3>Students</h3>
+<app-students></app-students>
+</section>

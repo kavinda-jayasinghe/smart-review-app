@@ -1,25 +1,33 @@
-import { Component, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Component, signal, inject } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, MatIconModule, MatButtonModule],
   styles: [`
-    .shell { min-height: 100vh; display: flex; }
-    .aside { width: 240px; background:#111827; color:#fff; padding:16px; }
-    .brand { font-weight:600; font-size:18px; margin-bottom:12px; }
+    .shell { min-height: 100vh; display: flex; background: var(--mat-sys-surface); }
+    .aside {
+      width: 240px; background:#fff; color: #111827; padding:16px; border-right:1px solid rgba(0,0,0,.06);
+      position: sticky; top:0; height:100vh; box-shadow: 0 1px 2px rgba(0,0,0,.03);
+    }
+    .brand { font-weight:700; font-size:18px; margin:4px 0 16px; }
     .nav { display:flex; flex-direction:column; gap:6px; }
-    .link { color:#fff; text-decoration:none; padding:6px 8px; border-radius:8px; }
-    .link.active { background: rgba(255,255,255,.12); }
+    .link { color: #111827; text-decoration:none; padding:8px 10px; border-radius:12px; display:block; }
+    .link.active { background: rgba(99,102,241,.10); color:#1f2937; }
+    .section-label { font-size:12px; text-transform:uppercase; color:#6b7280; margin:8px 0 4px; }
     .main { flex:1; }
     .header {
-      height:56px; border-bottom:1px solid #e5e7eb;
+      height:56px; border-bottom:1px solid rgba(0,0,0,.06);
       display:flex; align-items:center; justify-content:space-between; padding:0 16px;
       position: sticky; top:0; background: var(--mat-sys-surface);
       z-index: 10;
     }
     .menu-btn { display:none; }
+    .content { padding:16px; max-width: 1200px; margin: 0 auto; }
     @media (max-width: 900px) {
       .aside { display: none; }
       .aside.open { display:block; position:fixed; inset:56px auto 0 0; z-index:20; }
@@ -30,45 +38,30 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
   <div class="shell">
     <!-- Sidebar -->
     <aside class="aside" [class.open]="open()">
-      <div class="brand">smart-review</div>
+      <div class="brand">StudyReview</div>
       <nav class="nav">
-        <!-- Student quick links -->
-        <a routerLink="/app/student/dashboard"
-           routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
-           class="link">Student • Dashboard</a>
-        <a routerLink="/app/student/smart-review"
-           routerLinkActive="active" class="link">Student • Smart Review</a>
-        <a routerLink="/app/student/logs"
-           routerLinkActive="active" class="link">Student • Logs</a>
-        <a routerLink="/app/student/assignments"
-           routerLinkActive="active" class="link">Student • Assignments</a>
-        <a routerLink="/app/student/classes"
-           routerLinkActive="active" class="link">Student • Classes</a>
-
-        <hr style="border-color:rgba(255,255,255,.15); margin:10px 0;">
-
-        <!-- Section entries -->
-        <a routerLink="/app/teacher/dashboard"
-           routerLinkActive="active" class="link">Teacher</a>
-        <a routerLink="/app/admin/dashboard"
-           routerLinkActive="active" class="link">Admin</a>
+        <div class="section-label">Student</div>
+        <a routerLink="/home" routerLinkActive="active" class="link">Home</a>
+        <a routerLink="/app/teacher/dashboard" routerLinkActive="active" class="link">Classes</a>
+        <a routerLink="/app" routerLinkActive="active" class="link">Messages</a>
       </nav>
     </aside>
 
     <!-- Main -->
     <main class="main">
       <header class="header">
-        <button class="menu-btn" (click)="toggle()">
-          ☰ Menu
-        </button>
-        <div>App</div>
-        <div style="display:flex; gap:12px;">
-          <a routerLink="/app/notifications">🔔</a>
+        <button class="menu-btn" (click)="toggle()">Menu</button>
+        <div></div>
+        <div style="display:flex; gap:12px; align-items:center;">
+          <button mat-icon-button aria-label="Logout" (click)="logout()" title="Logout">
+            <mat-icon>logout</mat-icon>
+          </button>
+          <a routerLink="/app/notifications">Notifications</a>
           <a routerLink="/app/profile">Profile</a>
         </div>
       </header>
 
-      <section style="padding:16px;">
+      <section class="content">
         <router-outlet />
       </section>
     </main>
@@ -78,4 +71,11 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 export class AppLayout {
   open = signal(false);
   toggle() { this.open.update(v => !v); }
+  private router = inject(Router);
+  private auth = inject(AuthService);
+  logout() {
+    this.auth.logout();
+    this.router.navigateByUrl('/auth/login');
+  }
 }
+

@@ -1,0 +1,70 @@
+:root {
+  --ink:#111827;
+  --muted:#6b7280;
+  --line:#e5e7eb;
+  --card:#ffffff;
+  --bg:#f7f7f8;
+}
+
+:host { display:block; background:var(--bg); padding:18px 22px; color:var(--ink); }
+
+/* breadcrumb */
+.breadcrumb{ display:flex; align-items:center; gap:10px; margin-bottom:12px; color:var(--muted); }
+.crumb.current{ color:var(--ink); }
+.sep{ color:#c4c7cf; }
+
+/* tabs */
+.tabs{ display:flex; gap:22px; border-bottom:1px solid var(--line); margin-bottom:16px; }
+.tab{
+  appearance:none; background:transparent; border:0; padding:12px 4px;
+  font-weight:600; color:var(--muted); cursor:pointer; position:relative;
+}
+.tab.active{ color:var(--ink); }
+.tab.active::after{
+  content:''; position:absolute; left:0; right:0; bottom:-1px; height:3px; border-radius:3px; background:#111827;
+}
+
+/* toolbar */
+.toolbar{ display:flex; gap:16px; align-items:center; margin:12px 0 16px; }
+.search{
+  flex:1; display:flex; align-items:center; gap:10px;
+  background:#f3f4f6; border:1px solid #e7e9ee; padding:10px 14px; border-radius:14px; color:var(--muted);
+}
+.search .material-icons{ font-size:20px; }
+.search input{ flex:1; border:0; outline:0; background:transparent; color:var(--ink); }
+
+/* button */
+.btn{ appearance:none; border:0; padding:10px 14px; border-radius:12px; font-weight:600; cursor:pointer; }
+.btn.primary{ background:#1677ff; color:#fff; }
+.btn.primary:hover{ filter:brightness(.95); }
+
+/* table */
+.table-wrap{ background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+.table{ width:100%; border-collapse:separate; border-spacing:0; }
+.table thead th{
+  text-align:left; padding:14px 16px; font-weight:600; color:var(--muted);
+  background:#fbfbfc; border-bottom:1px solid var(--line);
+}
+.table tbody td{ padding:16px; border-bottom:1px solid #eef0f3; }
+.table tbody tr:nth-child(odd){ background:#fff; }
+.table tbody tr:nth-child(even){ background:#fafafa; }
+.th-actions, .actions{ text-align:right; padding-right:18px; }
+
+/* links and status pills */
+.link{ color:#2563eb; text-decoration:none; }
+.link:hover{ text-decoration:underline; }
+
+.badge{
+  display:inline-block; padding:6px 12px; border-radius:999px; font-weight:600; font-size:12px;
+  background:#eef2ff; color:#111827;
+}
+.badge.closed{ background:#f3f4f6; }
+.badge.draft{ background:#fff7ed; }
+
+.action-link{ color:#1f2937; font-weight:600; text-decoration:none; }
+.action-link:hover{ text-decoration:underline; }
+
+@media (max-width: 700px){
+  :host{ padding:16px; }
+  .tabs{ gap:12px; }
+}
