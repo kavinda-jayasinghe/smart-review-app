@@ -1,0 +1,34 @@
+:root { --ink:#111827; --muted:#6b7280; --line:#e5e7eb; --bg:#f7f7f8; --card:#ffffff; }
+
+:host { display:block; }
+.page { background:var(--bg); padding:18px 22px; color:var(--ink); max-width:980px; }
+.title { font-size:32px; font-weight:800; margin:6px 0 12px; }
+
+/* search bar */
+.toolbar { margin:10px 0 14px; }
+.search {
+  display:flex; align-items:center; gap:10px;
+  background:#f3f4f6; border:1px solid #e7e9ee; padding:10px 14px;
+  border-radius:14px; color:var(--muted);
+}
+.mi { font-family:"Material Icons"; font-size:20px; }
+.search input { flex:1; border:0; outline:0; background:transparent; color:var(--ink); }
+
+/* list */
+.list { margin-top:10px; }
+.row {
+  width:100%; background:transparent; border:0; text-align:left; cursor:pointer;
+  display:flex; align-items:center; gap:12px; padding:12px 8px; border-radius:12px;
+}
+.row:hover { background:#f5f6f8; }
+.avatar { width:44px; height:44px; border-radius:50%; object-fit:cover; }
+.text { flex:1; display:flex; flex-direction:column; }
+.name { font-weight:700; }
+.last { color:var(--muted); margin-top:2px; }
+.time { color:var(--muted); font-size:13px; }
+
+/* responsive */
+@media (max-width:520px){
+  .page { padding:16px; }
+  .title { font-size:26px; }
+}
