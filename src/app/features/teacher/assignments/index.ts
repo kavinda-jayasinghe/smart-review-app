@@ -1,2 +1,0 @@
-export { Assignments } from './assignments';
-

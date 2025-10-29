@@ -1,161 +1,63 @@
-import { Component, computed, signal, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators, FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormsModule } from '@angular/forms';              // <- add this
+import { ReactiveFormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+
+// Material is optional here, you can keep or remove
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
-import { RouterLink, ActivatedRoute } from '@angular/router';
-import { TeacherAssignmentsService, AssignmentDetailsDto, AssignmentResponseDto } from '../../../core/services/teacher-assignments.service';
-import { TeacherClassesService, ClassDetailsDto } from '../../../core/services/teacher-classes.service';
-import { TeacherTopicsService, TopicResponseDto } from '../../../core/services/teacher-topics.service';
-import { TeacherMcqService, McqDetailsDto, McqResponseDto } from '../../../core/services/teacher-mcq.service';
+
+type Tab = 'overview' | 'topics' | 'assignments' | 'students';
+interface AssignmentRow {
+  dueISO: string;
+  title: string;
+  topic: string;
+  status: 'Published' | 'Closed' | 'Draft';
+  submitted: number;
+  graded: number;
+}
 
 @Component({
   selector: 'app-assignments',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatListModule, RouterLink],
+  imports: [
+    CommonModule, FormsModule, ReactiveFormsModule, RouterLink,
+    MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatListModule
+  ],
   templateUrl: './assignments.html',
   styleUrls: ['./assignments.scss'],
 })
 export class Assignments {
-  classes = signal<ClassDetailsDto[] | null>(null);
-  topics = signal<TopicResponseDto[] | null>(null);
-  assignments = signal<AssignmentResponseDto[] | null>(null);
-  selectedClassId = signal<number | null>(null);
-  selectedAssignment = signal<AssignmentResponseDto | null>(null);
-  loading = signal(false);
-  error = signal<string | null>(null);
+  title = 'Grade 10 Maths';
+  tab: Tab = 'assignments';
 
-  // DI helper usable in field initializers
-  private fb = inject(FormBuilder);
+  q = '';
+  assignments: AssignmentRow[] = [
+    { dueISO:'2024-05-15', title:'Algebra Quiz 1',     topic:'Algebra',      status:'Published', submitted:25, graded:20 },
+    { dueISO:'2024-05-10', title:'Geometry Quiz 2',    topic:'Geometry',     status:'Closed',    submitted:20, graded:20 },
+    { dueISO:'2024-05-05', title:'Calculus Quiz 3',    topic:'Calculus',     status:'Draft',     submitted:15, graded:15 },
+    { dueISO:'2024-04-30', title:'Statistics Quiz 4',  topic:'Statistics',   status:'Published', submitted:30, graded:25 },
+    { dueISO:'2024-04-25', title:'Trigonometry Quiz 5',topic:'Trigonometry', status:'Closed',    submitted:10, graded:10 },
+  ];
 
-  // Create / Update Assignment
-  form = this.fb.group({
-    assignmentName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(120)]],
-    timeDuration: ['01:00:00', Validators.required],
-    startTime: ['', Validators.required],
-    endTime: ['', Validators.required],
-    isMcq: [true, Validators.required],
-    topicId: [null as number | null, Validators.required],
-  });
-
-  // Bulk MCQs for selected assignment
-  mcqs = new FormArray<McqForm>([]);
-  hasSelection = computed(() => !!this.selectedAssignment());
-
-  private route = inject(ActivatedRoute);
-  constructor(
-    private classesSvc: TeacherClassesService,
-    private topicsSvc: TeacherTopicsService,
-    private assignmentsSvc: TeacherAssignmentsService,
-    private mcqSvc: TeacherMcqService,
-  ) {
-    this.loadRefs();
-    const cid = Number(this.route.snapshot.queryParamMap.get('classId'));
-    if (cid) {
-      // allow refs to load first, then set class
-      queueMicrotask(() => this.onClassChange(cid));
-    }
+  filtered() {
+    const t = this.q.trim().toLowerCase();
+    if (!t) return this.assignments;
+    return this.assignments.filter(a =>
+      a.title.toLowerCase().includes(t) || a.topic.toLowerCase().includes(t)
+    );
   }
 
-  loadRefs() {
-    this.loading.set(true); this.error.set(null);
-    this.classesSvc.list().subscribe({ next: list => this.classes.set(list), error: () => {} });
-    this.topicsSvc.list().subscribe({ next: list => this.topics.set(list), error: () => {} });
-    this.loading.set(false);
-  }
+  setTab(t: Tab) { this.tab = t; }
+  is(t: Tab) { return this.tab === t; }
 
-  onClassChange(classId: number | null) {
-    this.selectedClassId.set(classId);
-    this.assignments.set(null);
-    this.selectedAssignment.set(null);
-    if (!classId) return;
-    this.loading.set(true); this.error.set(null);
-    this.assignmentsSvc.listByClassId(classId).subscribe({
-      next: list => { this.assignments.set(list); this.loading.set(false); },
-      error: err => { this.error.set(err?.error?.message || 'Failed to load assignments'); this.loading.set(false); }
-    });
-  }
-
-  submitAssignment() {
-    if (this.form.invalid) return;
-    const dto = this.form.getRawValue() as AssignmentDetailsDto;
-    this.loading.set(true); this.error.set(null);
-    this.assignmentsSvc.create(dto).subscribe({
-      next: created => {
-        // refresh list for the class of the topic, if known
-        const t = this.topics()?.find(x => x.id === dto.topicId);
-        if (t) this.onClassChange(t.classId);
-        this.form.reset({ assignmentName: '', timeDuration: '01:00:00', startTime: '', endTime: '', isMcq: true, topicId: null });
-        this.selectedAssignment.set(created);
-        this.mcqs.clear();
-      },
-      error: err => { this.error.set(err?.error?.message || 'Create failed'); this.loading.set(false); }
-    });
-  }
-
-  viewAssignment(a: AssignmentResponseDto) { this.selectedAssignment.set(a); this.mcqs.clear(); }
-  clearSelection() { this.selectedAssignment.set(null); this.mcqs.clear(); }
-  removeAssignment(a: AssignmentResponseDto) {
-    if (!confirm('Delete assignment?')) return;
-    this.loading.set(true); this.error.set(null);
-    this.assignmentsSvc.delete(a.id).subscribe({
-      next: () => {
-        const cid = this.selectedClassId();
-        if (cid) this.onClassChange(cid); else { this.assignments.set(null); this.loading.set(false); }
-        if (this.selectedAssignment()?.id === a.id) this.clearSelection();
-      },
-      error: err => { this.error.set(err?.error?.message || 'Delete failed'); this.loading.set(false); }
-    });
-  }
-
-  // MCQ bulk form helpers
-  addMcq() { this.mcqs.push(this.createMcqGroup()); }
-  removeMcq(i: number) { this.mcqs.removeAt(i); }
-  private createMcqGroup(): McqForm {
-    return this.fb.nonNullable.group({
-      question: ['', Validators.required],
-      optionA: ['', Validators.required],
-      optionB: ['', Validators.required],
-      optionC: [''],
-      optionD: [''],
-      correctAnswer: ['', Validators.required],
-    });
-  }
-
-  submitMcqs() {
-    const a = this.selectedAssignment();
-    if (!a || this.mcqs.length === 0) return;
-    const payload: McqDetailsDto[] = this.mcqs.controls.map((g) => {
-      const v = g.getRawValue();
-      return {
-        assignmentId: a.id,
-        question: v.question,
-        options: [v.optionA, v.optionB, v.optionC, v.optionD].filter(Boolean) as string[],
-        correctAnswer: v.correctAnswer,
-      };
-    });
-    this.loading.set(true); this.error.set(null);
-    this.mcqSvc.createBulk(payload).subscribe({
-      next: (result: McqResponseDto[]) => {
-        // update selected assignment mcqs list
-        this.selectedAssignment.set({ ...a, mcqs: [...(a.mcqs || []), ...result] });
-        this.mcqs.clear();
-        this.loading.set(false);
-      },
-      error: err => { this.error.set(err?.error?.message || 'Failed to add MCQs'); this.loading.set(false); }
-    });
+  onAddAssignment() {
+    // later open dialog or navigate
+    alert('Add Assignment clicked');
   }
 }
-
-type McqForm = FormGroup<{
-  question: FormControl<string>;
-  optionA: FormControl<string>;
-  optionB: FormControl<string>;
-  optionC: FormControl<string | ''>;
-  optionD: FormControl<string | ''>;
-  correctAnswer: FormControl<string>;
-}>;

@@ -5,81 +5,50 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { TeacherClassesService, ClassDetailsDto } from '../../../core/services/teacher-classes.service';
-import { TeacherTopicsService, TopicResponseDto } from '../../../core/services/teacher-topics.service';
-import { TeacherAssignmentsService, AssignmentResponseDto } from '../../../core/services/teacher-assignments.service';
-import { CreateClassDialog } from './create-class-dialog';
+import { Assignments } from "../assignments/assignments";
+interface Metric {
+  label: string;
+  value: string;
+  sub?: string;
+}
+interface Row {
+  assignment: string;
+  topic: string;
+  due: string;        // keep it simple, already formatted
+  status: 'Published' | 'Draft';
+  submissions: string;
+}
+type Tab = 'overview' | 'topics' | 'assignments' | 'students';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatCardModule, MatButtonModule, MatIconModule, MatListModule, MatDialogModule],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatListModule, Assignments],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.scss'],
 })
 export class Dashboard {
-  private classesSvc = inject(TeacherClassesService);
-  private topicsSvc = inject(TeacherTopicsService);
-  private assignmentsSvc = inject(TeacherAssignmentsService);
-  private dialog = inject(MatDialog);
+  title = 'Grade 10 Maths';
+  tab: Tab = 'overview';
 
-  loading = signal(true);
-  error = signal<string | null>(null);
-  classes = signal<ClassDetailsDto[] | null>(null);
-  topics = signal<TopicResponseDto[] | null>(null);
-  upcoming = signal<AssignmentResponseDto[]>([]);
 
-  totalClasses = computed(() => this.classes()?.length ?? 0);
-  totalTopics = computed(() => this.topics()?.length ?? 0);
-  totalAssignments = computed(() => (this.topics()?.reduce((n, t) => n + (t.numberOfAssignment || 0), 0)) || 0);
+  metrics: Metric[] = [
+    { label: 'Completion % (Today)', value: '76%' },
+    { label: 'Overdue Reviews', value: '14' },
+    { label: 'Total Assignments', value: '47' },
+    { label: 'Total Students', value: '132' },
+  ];
 
-  constructor() {
-    this.load();
-  }
+  upcoming: Row[] = [
+    { assignment: 'Math Quiz 1',        topic: 'Algebra',        due: 'Today 11:59 PM',  status: 'Published', submissions: '18/25' },
+    { assignment: 'Science Project',    topic: 'Biology',        due: 'Tomorrow 1:00 PM',status: 'Published', submissions: '22/28' },
+    { assignment: 'History Essay',      topic: 'World History',  due: 'Tue 10:00 AM',    status: 'Published', submissions: '15/20' },
+    { assignment: 'English Assignment', topic: 'Literature',     due: 'Wed 2:00 PM',     status: 'Published', submissions: '20/24' },
+    { assignment: 'Physics Lab Report', topic: 'Physics',        due: 'Thu 4:00 PM',     status: 'Published', submissions: '17/22' },
+    { assignment: 'Geography Presentation', topic: 'Geography',  due: 'Fri 11:59 PM',    status: 'Published', submissions: '21/26' },
+    { assignment: 'Art Project',        topic: 'Visual Arts',    due: 'Sat 1:00 PM',     status: 'Published', submissions: '19/23' },
+  ];
 
-  load() {
-    this.loading.set(true);
-    this.error.set(null);
-    // Load classes and topics first
-    this.classesSvc.list().subscribe({
-      next: list => {
-        this.classes.set(list);
-        this.fetchUpcoming(list);
-      },
-      error: err => { this.error.set(err?.error?.message || 'Failed to load classes'); this.loading.set(false); }
-    });
-    this.topicsSvc.list().subscribe({
-      next: list => this.topics.set(list),
-      error: err => this.error.set(err?.error?.message || 'Failed to load topics')
-    });
-  }
-
-  private fetchUpcoming(list: ClassDetailsDto[]) {
-    const promises = list.map(c => new Promise<AssignmentResponseDto[]>((resolve) => {
-      if (!c.id) { resolve([]); return; }
-      this.assignmentsSvc.listByClassId(c.id).subscribe({
-        next: xs => resolve(xs || []),
-        error: _ => resolve([])
-      });
-    }));
-    Promise.all(promises).then(groups => {
-      const flat = groups.flat();
-      const now = new Date().getTime();
-      const upcoming = flat
-        .filter(a => Date.parse(a.startTime) >= now)
-        .sort((a, b) => Date.parse(a.startTime) - Date.parse(b.startTime))
-        .slice(0, 5);
-      this.upcoming.set(upcoming);
-      this.loading.set(false);
-    }).catch(() => {
-      this.upcoming.set([]);
-      this.loading.set(false);
-    });
-  }
-
-  openCreateClass() {
-    const ref = this.dialog.open(CreateClassDialog, { width: '520px' });
-    ref.afterClosed().subscribe(ok => { if (ok) this.load(); });
-  }
+  setTab(t: Tab) { this.tab = t; }
+  is(t: Tab) { return this.tab === t; }
 }

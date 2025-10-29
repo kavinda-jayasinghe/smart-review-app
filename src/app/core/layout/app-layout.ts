@@ -41,17 +41,9 @@ import { AuthService } from '../services/auth.service';
       <div class="brand">StudyReview</div>
       <nav class="nav">
         <div class="section-label">Student</div>
-        <a routerLink="/app/student/dashboard"
-           routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
-           class="link">Dashboard</a>
-        <a routerLink="/app/student/smart-review" routerLinkActive="active" class="link">Smart Review</a>
-        <a routerLink="/app/student/logs" routerLinkActive="active" class="link">Logs</a>
-        <a routerLink="/app/student/assignments" routerLinkActive="active" class="link">Assignments</a>
-        <a routerLink="/app/student/classes" routerLinkActive="active" class="link">Classes</a>
-
-        <div class="section-label">Areas</div>
-        <a routerLink="/app/teacher/dashboard" routerLinkActive="active" class="link">Teacher</a>
-        <a routerLink="/app/admin/dashboard" routerLinkActive="active" class="link">Admin</a>
+        <a routerLink="/" routerLinkActive="active" class="link">Home</a>
+        <a routerLink="/app/teacher/dashboard" routerLinkActive="active" class="link">Classes</a>
+        <a routerLink="/app" routerLinkActive="active" class="link">Messages</a>
       </nav>
     </aside>
 

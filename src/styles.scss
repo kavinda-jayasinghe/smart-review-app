@@ -21,8 +21,5 @@ html {
 /* Base surface + font */
 body {
   color-scheme: light;
-  background: #ffffff; /* force white background */
-  color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
   margin: 0;
 }

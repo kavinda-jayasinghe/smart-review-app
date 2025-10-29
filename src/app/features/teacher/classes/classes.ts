@@ -9,7 +9,6 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { CreateClassDialog } from '../dashboard/create-class-dialog';
 import { TeacherClassesService, ClassDetailsDto } from '../../../core/services/teacher-classes.service';
 
 @Component({
@@ -28,9 +27,9 @@ export class Classes {
   private fb = inject(FormBuilder);
   form = this.fb.group({
     id: [null as number | null],
-    className: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(120)]],
-    description: [''],
-    teacherId: [123, Validators.required],
+    className: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+    description: ['', [Validators.maxLength(500)]],
+    teacherId: [123, [Validators.required, Validators.min(1)]],
     dp: [''],
   });
 
@@ -56,7 +55,14 @@ export class Classes {
 
   save() {
     if (this.form.invalid) return;
-    const value = this.form.getRawValue() as ClassDetailsDto;
+    const r = this.form.getRawValue();
+    const value: ClassDetailsDto = {
+      id: r.id,
+      className: r.className!,
+      description: (r.description ?? '') as string,
+      teacherId: r.teacherId!,
+      dp: r.dp && r.dp.trim() ? r.dp : null,
+    };
     this.loading.set(true); this.error.set(null);
     const op = value.id ? this.svc.update(value.id, value) : this.svc.create(value);
     op.subscribe({
@@ -81,8 +87,5 @@ export class Classes {
     return `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='240'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23dbeafe'/><stop offset='1' stop-color='%23ede9fe'/></linearGradient></defs><rect width='100%' height='100%' fill='url(%23g)'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Segoe UI, Roboto, sans-serif' font-size='28' fill='%236b7280'>${label}</text></svg>`;
   }
 
-  openCreateClass() {
-    const ref = this.dialog.open(CreateClassDialog, { width: '520px' });
-    ref.afterClosed().subscribe(ok => { if (ok) this.refresh(); });
-  }
+
 }
