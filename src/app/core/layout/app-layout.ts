@@ -1,10 +1,13 @@
-import { Component, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Component, signal, inject } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, MatIconModule, MatButtonModule],
   styles: [`
     .shell { min-height: 100vh; display: flex; background: var(--mat-sys-surface); }
     .aside {
@@ -57,7 +60,10 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
       <header class="header">
         <button class="menu-btn" (click)="toggle()">Menu</button>
         <div></div>
-        <div style="display:flex; gap:12px;">
+        <div style="display:flex; gap:12px; align-items:center;">
+          <button mat-icon-button aria-label="Logout" (click)="logout()" title="Logout">
+            <mat-icon>logout</mat-icon>
+          </button>
           <a routerLink="/app/notifications">Notifications</a>
           <a routerLink="/app/profile">Profile</a>
         </div>
@@ -73,5 +79,11 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 export class AppLayout {
   open = signal(false);
   toggle() { this.open.update(v => !v); }
+  private router = inject(Router);
+  private auth = inject(AuthService);
+  logout() {
+    this.auth.logout();
+    this.router.navigateByUrl('/auth/login');
+  }
 }
 

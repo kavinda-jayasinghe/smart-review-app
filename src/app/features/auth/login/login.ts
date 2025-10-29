@@ -16,9 +16,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   imports: [CommonModule, RouterLink, ReactiveFormsModule,
     MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule],
   styles: [`
-    .wrap { min-height: 80vh; display: grid; place-items: center; padding: 16px; }
+    .wrap { min-height: 100vh; display: grid; place-items: center; padding: 16px; background:#fff; }
     mat-card { width: 100%; max-width: 420px; padding: 8px 8px 16px; }
     .actions { display:flex; justify-content: space-between; align-items:center; margin-top: 8px; }
+    .row { display:flex; justify-content: space-between; align-items:center; margin-top: 12px; }
   `],
   template: `
     <div class="wrap">
