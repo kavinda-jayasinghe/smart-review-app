@@ -1,0 +1,40 @@
+<div class="container">
+  <mat-card>
+    <h3 class="h3">Classes</h3>
+    <p *ngIf="loading()">Loading…</p>
+    <p class="error" *ngIf="error()">{{ error() }}</p>
+
+    <mat-list *ngIf="classes() as list">
+      <mat-list-item *ngFor="let c of list">
+        <div style="display:flex; align-items:center; gap:8px; width:100%; justify-content:space-between;">
+          <div>
+            <div style="font-weight:600">{{ c.className }}</div>
+            <div class="muted" style="font-size:12px;">{{ c.description }}</div>
+          </div>
+          <span>
+            <button mat-stroked-button color="primary" (click)="edit(c)">Edit</button>
+            <button mat-stroked-button color="warn" (click)="remove(c)">Delete</button>
+          </span>
+        </div>
+      </mat-list-item>
+    </mat-list>
+  </mat-card>
+
+  <mat-card style="margin-top:16px;">
+    <h3 class="h3">{{ selected() ? 'Edit Class' : 'Create Class' }}</h3>
+    <form [formGroup]="form" (ngSubmit)="save()" style="display:grid; gap:12px;">
+      <mat-form-field appearance="outline">
+        <mat-label>Class Name</mat-label>
+        <input matInput formControlName="className" required>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Description</mat-label>
+        <input matInput formControlName="description">
+      </mat-form-field>
+      <div style="display:flex; gap:8px;">
+        <button mat-raised-button color="primary" [disabled]="form.invalid || loading()">{{ form.value.id ? 'Update' : 'Create' }}</button>
+        <button type="button" mat-button (click)="resetForm()">Reset</button>
+      </div>
+    </form>
+  </mat-card>
+</div>

@@ -1,0 +1,14 @@
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 12px;
+}
+.stat-card { display:flex; flex-direction:column; gap:8px; }
+.stat { display:flex; justify-content:space-between; align-items:center; }
+.stat .label { color: var(--muted, #6b7280); }
+.stat .value { font-size: 28px; font-weight: 600; }

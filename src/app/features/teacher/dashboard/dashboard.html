@@ -1,0 +1,72 @@
+<div class="container">
+  <div class="grid-4">
+    <mat-card class="stat-card">
+      <div class="stat">
+        <span class="label">Classes</span>
+        <span class="value">{{ totalClasses() }}</span>
+      </div>
+      <a mat-stroked-button color="primary" routerLink="/app/teacher/classes">Manage</a>
+    </mat-card>
+    <mat-card class="stat-card">
+      <div class="stat">
+        <span class="label">Topics</span>
+        <span class="value">{{ totalTopics() }}</span>
+      </div>
+      <a mat-stroked-button color="primary" routerLink="/app/teacher/topics">Manage</a>
+    </mat-card>
+    <mat-card class="stat-card">
+      <div class="stat">
+        <span class="label">Assignments</span>
+        <span class="value">{{ totalAssignments() }}</span>
+      </div>
+      <a mat-stroked-button color="primary" routerLink="/app/teacher/assignments">Manage</a>
+    </mat-card>
+    <mat-card class="stat-card">
+      <div class="stat">
+        <span class="label">Upcoming</span>
+        <span class="value">{{ upcoming().length }}</span>
+      </div>
+      <a mat-stroked-button color="primary" routerLink="/app/teacher/assignments">View</a>
+    </mat-card>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px; align-items:start;">
+    <mat-card>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 class="h3">My Classes</h3>
+        <a mat-button color="primary" routerLink="/app/teacher/classes">Open</a>
+      </div>
+      <p *ngIf="loading()">Loading…</p>
+      <p class="error" *ngIf="error()">{{ error() }}</p>
+      <mat-list *ngIf="classes() as list">
+        <mat-list-item *ngFor="let c of list">
+          <div style="display:flex; align-items:center; gap:8px; width:100%; justify-content:space-between;">
+            <div>
+              <div style="font-weight:600">{{ c.className }}</div>
+              <div class="muted" style="font-size:12px;">{{ c.description }}</div>
+            </div>
+            <a mat-stroked-button routerLink="/app/teacher/assignments">Assignments</a>
+          </div>
+        </mat-list-item>
+      </mat-list>
+    </mat-card>
+
+    <mat-card>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 class="h3">Upcoming Assignments</h3>
+        <a mat-button color="primary" routerLink="/app/teacher/assignments">All</a>
+      </div>
+      <mat-list *ngIf="upcoming() as list">
+        <mat-list-item *ngFor="let a of list">
+          <div style="display:flex; flex-direction:column;">
+            <span style="font-weight:600;">{{ a.assignmentName }}</span>
+            <span class="muted" style="font-size:12px;">Starts: {{ a.startTime }} • Topic: {{ a.topicTitle }}</span>
+          </div>
+        </mat-list-item>
+        <mat-list-item *ngIf="list.length === 0">
+          <span class="muted">No upcoming assignments</span>
+        </mat-list-item>
+      </mat-list>
+    </mat-card>
+  </div>
+</div>

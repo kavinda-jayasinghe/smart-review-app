@@ -1,0 +1,93 @@
+<div class="container">
+  <mat-card>
+    <h3 class="h3">Assignments</h3>
+    <div style="display:flex; gap:12px; align-items:center;">
+      <mat-form-field appearance="outline">
+        <mat-label>Class</mat-label>
+        <mat-select (selectionChange)="onClassChange($event.value)" [value]="selectedClassId()">
+          <mat-option [value]="null">-- Select Class --</mat-option>
+          <mat-option *ngFor="let c of classes() || []" [value]="c.id">{{ c.className }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-stroked-button (click)="onClassChange(selectedClassId())">Refresh</button>
+    </div>
+    <p *ngIf="loading()">Loading…</p>
+    <p class="error" *ngIf="error()">{{ error() }}</p>
+
+    <mat-list *ngIf="assignments() as list">
+      <mat-list-item *ngFor="let a of list">
+        <div style="display:flex; align-items:center; gap:8px; width:100%; justify-content:space-between;">
+          <div>
+            <div style="font-weight:600">{{ a.assignmentName }}</div>
+            <div class="muted" style="font-size:12px;">Topic: {{ a.topicTitle }} • {{ a.timeDuration }}</div>
+          </div>
+          <span>
+            <button mat-stroked-button color="primary" (click)="viewAssignment(a)">Open</button>
+            <button mat-stroked-button color="warn" (click)="removeAssignment(a)">Delete</button>
+          </span>
+        </div>
+      </mat-list-item>
+    </mat-list>
+  </mat-card>
+
+  <mat-card style="margin-top:16px;">
+    <h3 class="h3">Create Assignment</h3>
+    <form [formGroup]="form" (ngSubmit)="submitAssignment()" style="display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+      <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="assignmentName" required>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Duration (HH:mm:ss)</mat-label>
+        <input matInput formControlName="timeDuration" required>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Start Time (ISO)</mat-label>
+        <input matInput formControlName="startTime" placeholder="2025-11-01T09:00:00+05:30" required>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>End Time (ISO)</mat-label>
+        <input matInput formControlName="endTime" placeholder="2025-11-01T10:30:00+05:30" required>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Topic</mat-label>
+        <mat-select formControlName="topicId" required>
+          <mat-option *ngFor="let t of topics() || []" [value]="t.id">{{ t.title }} ({{ t.className }})</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button mat-raised-button color="primary" [disabled]="form.invalid || loading()">Create</button>
+      </div>
+    </form>
+  </mat-card>
+
+  <mat-card *ngIf="selectedAssignment() as sel" style="margin-top:16px;">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h3 class="h3">Assignment: {{ sel.assignmentName }}</h3>
+      <button mat-button (click)="clearSelection()">Close</button>
+    </div>
+    <p class="muted">Topic: {{ sel.topicTitle }} • Duration: {{ sel.timeDuration }}</p>
+
+    <h4 class="h4" style="margin-top:12px;">MCQs</h4>
+    <mat-list>
+      <mat-list-item *ngFor="let m of sel.mcqs">{{ m.question }} — <i>{{ m.correctAnswer }}</i></mat-list-item>
+    </mat-list>
+
+    <h4 class="h4" style="margin-top:12px;">Add MCQs (Bulk)</h4>
+    <div *ngFor="let g of mcqs.controls; let i = index" [formGroup]="g" style="display:grid; gap:8px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-bottom:8px;">
+      <mat-form-field appearance="outline"><mat-label>Question</mat-label><input matInput formControlName="question"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Option A</mat-label><input matInput formControlName="optionA"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Option B</mat-label><input matInput formControlName="optionB"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Option C</mat-label><input matInput formControlName="optionC"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Option D</mat-label><input matInput formControlName="optionD"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Correct Answer</mat-label><input matInput formControlName="correctAnswer"></mat-form-field>
+      <div>
+        <button mat-stroked-button color="warn" (click)="removeMcq(i)" type="button">Remove</button>
+      </div>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button mat-stroked-button (click)="addMcq()" type="button">Add MCQ</button>
+      <button mat-raised-button color="primary" (click)="submitMcqs()" [disabled]="mcqs.length === 0 || loading()">Save MCQs</button>
+    </div>
+  </mat-card>
+</div>
