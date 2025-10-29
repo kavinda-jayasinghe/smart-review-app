@@ -1,1 +1,25 @@
+:root { --ink:#111827; --muted:#6b7280; --line:#e5e7eb; --bg:#f7f7f8; }
 
+.container {
+  padding: 18px 22px;
+  background: var(--bg);
+  min-height: calc(100vh - 56px);
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.card {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.h3 { margin: 0 0 6px; font-size: 18px; font-weight: 800; color: var(--ink); }
+.muted { color: var(--muted); margin: 0 0 12px; }
+
+@media (max-width: 900px) { .grid-3 { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .grid-3 { grid-template-columns: 1fr; } }
