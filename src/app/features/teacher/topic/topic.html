@@ -1,1 +1,35 @@
-<p>topic works!</p>
+<!-- Toolbar -->
+<div class="toolbar">
+  <div class="search">
+    <span class="mi">search</span>
+    <input
+      type="text"
+      [(ngModel)]="q"
+      name="q"
+      placeholder="Search topics" />
+  </div>
+
+  <button class="btn primary" (click)="addTopic()">Add Topic</button>
+</div>
+
+<!-- Table -->
+<div class="table-wrap">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Topic</th>
+        <th>Assignments</th>
+        <th class="th-actions">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let r of filtered()">
+        <td>{{ r.name }}</td>
+        <td>{{ r.assignments }}</td>
+        <td class="actions">
+          <a class="action-link" (click)="enable(r)">Enable</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

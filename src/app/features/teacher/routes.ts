@@ -8,7 +8,6 @@ export const TEACHER_ROUTES: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'home', loadComponent: () => import('./dashboard').then(m => m.Dashboard) },
       { path: 'dashboard', loadComponent: () => import('./dashboard').then(m => m.Dashboard) },
-      { path: 'topics', loadComponent: () => import('./topics').then(m => m.Topics) },
       { path: 'reports', loadComponent: () => import('./reports').then(m => m.Reports) },
     ],
   },
