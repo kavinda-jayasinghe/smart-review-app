@@ -1,16 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { AdminDataService } from '../../core/services/admin-data.service';
-import { AdminStats } from '../../core/models/stats.model';
-import { NgFor } from '@angular/common';
+import { AdminStats } from '../../../core/models/stats.model';
+import { AdminDataService } from '../../../core/services/admin-data.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-admin-dashboard',
-  standalone: true,
-  imports: [NgFor],
-  templateUrl: './admin-dashboard.component.html',
-  styleUrls: ['./admin-dashboard.component.css'],
+  imports: [CommonModule],
+  templateUrl: './admin-dashboard.html',
+  styleUrl: './admin-dashboard.scss',
 })
-export class AdminDashboardComponent implements OnInit {
+export class AdminDashboard implements OnInit {
   statsCards: { label: string; value: number | string }[] = [];
 
   constructor(private data: AdminDataService) {}
