@@ -1,0 +1,42 @@
+:root { --ink:#111827; --muted:#6b7280; --line:#e5e7eb; --card:#ffffff; --bg:#f7f7f8; }
+
+:host { display:block; color:var(--ink); }
+
+/* metric cards */
+.metrics{
+  display:grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap:16px; margin:10px 0 16px;
+}
+.card{
+  background:var(--card); border:1px solid var(--line); border-radius:14px;
+  padding:18px; min-height:92px;
+}
+.label{ color:var(--muted); font-size:14px; }
+.value{ font-size:32px; font-weight:800; margin-top:8px; }
+
+/* section title */
+.section-title{ font-size:20px; font-weight:800; margin:18px 0 12px; }
+
+/* table */
+.table-wrap{ background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+.table{ width:100%; border-collapse:separate; border-spacing:0; }
+.table thead th{
+  text-align:left; padding:14px 16px; font-weight:600; color:var(--muted);
+  background:#fbfbfc; border-bottom:1px solid var(--line);
+}
+.table tbody td{ padding:16px; border-bottom:1px solid #eef0f3; }
+.table tbody tr:nth-child(odd){ background:#fff; }
+.table tbody tr:nth-child(even){ background:#fafafa; }
+
+/* status pill */
+.badge{
+  display:inline-block; padding:6px 12px; border-radius:999px; font-weight:600; font-size:12px;
+}
+.badge.published{ background:#eef2ff; color:#111827; }
+
+@media (max-width: 960px){ .metrics{ grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 520px){
+  .metrics{ grid-template-columns: 1fr; }
+  .section-title{ font-size:18px; }
+}

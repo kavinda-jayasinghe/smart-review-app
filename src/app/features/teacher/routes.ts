@@ -1,9 +1,14 @@
 import { Routes } from '@angular/router';
 
 export const TEACHER_ROUTES: Routes = [
-  { path: 'dashboard', loadComponent: () => import('./dashboard').then(m => m.Dashboard) },
-  { path: 'classes', loadComponent: () => import('./classes').then(m => m.Classes) },
-  { path: 'assignments', loadComponent: () => import('./assignments').then(m => m.Assignments) },
-  { path: 'topics', loadComponent: () => import('./topics').then(m => m.Topics) },
-  { path: 'reports', loadComponent: () => import('./reports').then(m => m.Reports) },
+  {
+    path: '',loadComponent: () => import('./teacher-base/teacher-base').then(m => m.TeacherBase),
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'home', loadComponent: () => import('./home').then(m => m.Home) },
+      { path: 'message', loadComponent: () => import('./message').then(m => m.Message) },
+      { path: 'dashboard', loadComponent: () => import('./dashboard').then(m => m.Dashboard) },
+      { path: 'reports', loadComponent: () => import('./reports').then(m => m.Reports) },
+    ],
+  },
 ];

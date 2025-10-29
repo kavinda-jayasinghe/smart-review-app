@@ -1,37 +1,34 @@
-import { Component } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Component, signal, inject } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink],
-  template: `
-  <div style="min-height:100vh; display:flex;">
-    <aside style="width:240px; background:#111827; color:white; padding:16px; display:none;"
-           class="md:block">
-      <div style="font-weight:600; font-size:18px; margin-bottom:8px;">smart-review</div>
-      <nav style="display:flex; flex-direction:column; gap:6px;">
-        <a routerLink="/app/student/dashboard" style="color:white; text-decoration:none;">Student</a>
-        <a routerLink="/app/teacher/dashboard" style="color:white; text-decoration:none;">Teacher</a>
-        <a routerLink="/app/admin/dashboard" style="color:white; text-decoration:none;">Admin</a>
-      </nav>
-    </aside>
-
-    <main style="flex:1;">
-      <header style="height:56px; border-bottom:1px solid #e5e7eb; display:flex; align-items:center; justify-content:space-between; padding:0 16px;">
-        <div>App</div>
-        <div style="display:flex; gap:12px;">
-          <a routerLink="/app/notifications">🔔</a>
-          <a routerLink="/app/profile">Profile</a>
-        </div>
-      </header>
-      <section style="padding:16px;">
-        <router-outlet />
-      </section>
-    </main>
-  </div>
-  `
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    MatIconModule,
+    MatButtonModule
+  ],
+  templateUrl: './app-layout.html',
+  styleUrls: ['./app-layout.scss']
 })
 export class AppLayout {
+  open = signal(false);
 
+  private router = inject(Router);
+  private auth = inject(AuthService);
+
+  toggle() {
+    this.open.update(v => !v);
+  }
+
+  logout() {
+    this.auth.logout();
+    this.router.navigateByUrl('/auth/login');
+  }
 }

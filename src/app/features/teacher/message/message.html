@@ -1,0 +1,21 @@
+<div class="page">
+  <h1 class="title">Messages</h1>
+
+  <div class="toolbar">
+    <div class="search">
+      <span class="mi">search</span>
+      <input type="text" [(ngModel)]="q" name="q" placeholder="Search" />
+    </div>
+  </div>
+
+  <div class="list">
+    <button class="row" *ngFor="let c of filtered()" (click)="openChat(c)">
+      <img class="avatar" [src]="c.avatar" [alt]="c.name" />
+      <div class="text">
+        <div class="name">{{ c.name }}</div>
+        <div class="last">{{ c.last }}</div>
+      </div>
+      <div class="time">{{ c.time }}</div>
+    </button>
+  </div>
+</div>
