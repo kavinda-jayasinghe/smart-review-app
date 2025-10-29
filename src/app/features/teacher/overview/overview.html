@@ -1,30 +1,33 @@
-<div class="page">
-  <h1 class="title">Welcome back, {{ name }}</h1>
+<!-- Tabs header lives outside. This is only the Overview body. -->
 
-  <h3 class="section-h">Summary</h3>
-  <div class="metrics">
-    <div class="card" *ngFor="let m of metrics">
-      <div class="label">{{ m.label }}</div>
-      <div class="value">{{ m.value }}</div>
-    </div>
+<div class="metrics">
+  <div class="card" *ngFor="let m of metrics">
+    <div class="label">{{ m.label }}</div>
+    <div class="value">{{ m.value }}</div>
   </div>
+</div>
 
-  <h3 class="section-h">Today at a glance</h3>
-  <div class="list">
-    <div class="row" *ngFor="let r of glance">
-      <div class="left">
-        <div class="square" [class.cbook]="r.icon==='bookmark'" [class.cassign]="r.icon==='assignment'">
-          <!-- simple icon shapes using CSS, no library needed -->
-          <div class="glyph" [class.g-class]="r.icon==='class'"
-                             [class.g-assignment]="r.icon==='assignment'"
-                             [class.g-bookmark]="r.icon==='bookmark'"></div>
-        </div>
-        <div class="text">
-          <div class="title">{{ r.title }}</div>
-          <div class="sub">{{ r.sub }}</div>
-        </div>
-      </div>
-      <a class="action" tabindex="0">{{ r.actionLabel || 'View' }}</a>
-    </div>
-  </div>
+<h2 class="section-title">Today at a glance — Assignments (Next 7 Days)</h2>
+
+<div class="table-wrap">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Assignment</th>
+        <th>Topic</th>
+        <th>Due</th>
+        <th>Status</th>
+        <th>Submissions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let r of rows">
+        <td>{{ r.assignment }}</td>
+        <td>{{ r.topic }}</td>
+        <td>{{ r.due }}</td>
+        <td><span class="badge published">{{ r.status }}</span></td>
+        <td>{{ r.submissions }}</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
