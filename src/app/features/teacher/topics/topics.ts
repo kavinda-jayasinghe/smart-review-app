@@ -6,13 +6,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
+import { RouterLink } from '@angular/router';
 import { TeacherTopicsService, TopicResponseDto, TopicDetailsDto } from '../../../core/services/teacher-topics.service';
 import { TeacherClassesService, ClassDetailsDto } from '../../../core/services/teacher-classes.service';
 
 @Component({
   selector: 'app-topics',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule],
+  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, RouterLink],
   templateUrl: './topics.html',
   styleUrls: ['./topics.scss'],
 })

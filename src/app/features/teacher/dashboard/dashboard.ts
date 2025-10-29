@@ -5,14 +5,16 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TeacherClassesService, ClassDetailsDto } from '../../../core/services/teacher-classes.service';
 import { TeacherTopicsService, TopicResponseDto } from '../../../core/services/teacher-topics.service';
 import { TeacherAssignmentsService, AssignmentResponseDto } from '../../../core/services/teacher-assignments.service';
+import { CreateClassDialog } from './create-class-dialog';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatCardModule, MatButtonModule, MatIconModule, MatListModule],
+  imports: [CommonModule, RouterLink, MatCardModule, MatButtonModule, MatIconModule, MatListModule, MatDialogModule],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.scss'],
 })
@@ -20,6 +22,7 @@ export class Dashboard {
   private classesSvc = inject(TeacherClassesService);
   private topicsSvc = inject(TeacherTopicsService);
   private assignmentsSvc = inject(TeacherAssignmentsService);
+  private dialog = inject(MatDialog);
 
   loading = signal(true);
   error = signal<string | null>(null);
@@ -73,5 +76,10 @@ export class Dashboard {
       this.upcoming.set([]);
       this.loading.set(false);
     });
+  }
+
+  openCreateClass() {
+    const ref = this.dialog.open(CreateClassDialog, { width: '520px' });
+    ref.afterClosed().subscribe(ok => { if (ok) this.load(); });
   }
 }

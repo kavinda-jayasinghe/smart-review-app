@@ -1,1 +1,19 @@
+.container { padding: 16px; }
 
+table.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+table.table thead th {
+  text-align: left;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #6b7280;
+  padding: 10px 8px;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+table.table tbody td {
+  padding: 12px 8px;
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+.error { color: #b91c1c; }

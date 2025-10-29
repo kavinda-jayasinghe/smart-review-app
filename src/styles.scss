@@ -1,6 +1,12 @@
-@use '@angular/material' as mat; // keep your Material M3 theme here
+// 1) All @use statements must be at the very top
+@use '@angular/material' as mat; // Material M3 theme mixins
+@use 'styles/_tokens' as *;
+@use 'styles/_reset' as *;
+@use 'styles/_typography' as *;
+@use 'styles/_layout' as *;
+@use 'styles/_utilities' as *;
 
-/* 1) Material theme (already in your file) */
+// 2) Then write rules that consume those modules
 html {
   @include mat.theme((
     color: (
@@ -12,7 +18,7 @@ html {
   ));
 }
 
-/* 2) Base surface + font */
+/* Base surface + font */
 body {
   color-scheme: light;
   background: var(--mat-sys-surface);
@@ -20,10 +26,3 @@ body {
   font: var(--mat-sys-body-medium);
   margin: 0;
 }
-
-/* 3) Import your partials */
-@import 'styles/_tokens';
-@import 'styles/_reset';
-@import 'styles/_typography';
-@import 'styles/_layout';
-@import 'styles/_utilities';

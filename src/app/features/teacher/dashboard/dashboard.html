@@ -5,36 +5,47 @@
         <span class="label">Classes</span>
         <span class="value">{{ totalClasses() }}</span>
       </div>
-      <a mat-stroked-button color="primary" routerLink="/app/teacher/classes">Manage</a>
+      <a mat-stroked-button color="primary" class="pill" routerLink="/app/teacher/classes">
+        Manage <mat-icon>chevron_right</mat-icon>
+      </a>
     </mat-card>
     <mat-card class="stat-card">
       <div class="stat">
         <span class="label">Topics</span>
         <span class="value">{{ totalTopics() }}</span>
       </div>
-      <a mat-stroked-button color="primary" routerLink="/app/teacher/topics">Manage</a>
+      <a mat-stroked-button color="primary" class="pill" routerLink="/app/teacher/topics">
+        Manage <mat-icon>chevron_right</mat-icon>
+      </a>
     </mat-card>
     <mat-card class="stat-card">
       <div class="stat">
         <span class="label">Assignments</span>
         <span class="value">{{ totalAssignments() }}</span>
       </div>
-      <a mat-stroked-button color="primary" routerLink="/app/teacher/assignments">Manage</a>
+      <a mat-stroked-button color="primary" class="pill" routerLink="/app/teacher/assignments">
+        Manage <mat-icon>chevron_right</mat-icon>
+      </a>
     </mat-card>
     <mat-card class="stat-card">
       <div class="stat">
         <span class="label">Upcoming</span>
         <span class="value">{{ upcoming().length }}</span>
       </div>
-      <a mat-stroked-button color="primary" routerLink="/app/teacher/assignments">View</a>
+      <a mat-stroked-button color="primary" class="pill" routerLink="/app/teacher/assignments">
+        View <mat-icon>chevron_right</mat-icon>
+      </a>
     </mat-card>
   </div>
 
   <div class="grid-2" style="margin-top:16px; align-items:start;">
-    <mat-card>
-      <div style="display:flex; justify-content:space-between; align-items:center;">
+    <mat-card class="panel">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
         <h3 class="h3">My Classes</h3>
-        <a mat-button color="primary" routerLink="/app/teacher/classes">Open</a>
+        <div style="display:flex; gap:8px;">
+          <button mat-raised-button color="primary" (click)="openCreateClass()">Create Class</button>
+          <a mat-button color="primary" routerLink="/app/teacher/classes">Open</a>
+        </div>
       </div>
       <p *ngIf="loading()">Loading…</p>
       <p class="error" *ngIf="error()">{{ error() }}</p>
@@ -51,7 +62,7 @@
       </mat-list>
     </mat-card>
 
-    <mat-card>
+    <mat-card class="panel">
       <div style="display:flex; justify-content:space-between; align-items:center;">
         <h3 class="h3">Upcoming Assignments</h3>
         <a mat-button color="primary" routerLink="/app/teacher/assignments">All</a>

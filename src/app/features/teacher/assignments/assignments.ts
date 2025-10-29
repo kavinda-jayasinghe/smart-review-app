@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
+import { RouterLink, ActivatedRoute } from '@angular/router';
 import { TeacherAssignmentsService, AssignmentDetailsDto, AssignmentResponseDto } from '../../../core/services/teacher-assignments.service';
 import { TeacherClassesService, ClassDetailsDto } from '../../../core/services/teacher-classes.service';
 import { TeacherTopicsService, TopicResponseDto } from '../../../core/services/teacher-topics.service';
@@ -15,7 +16,7 @@ import { TeacherMcqService, McqDetailsDto, McqResponseDto } from '../../../core/
 @Component({
   selector: 'app-assignments',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatListModule],
+  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatListModule, RouterLink],
   templateUrl: './assignments.html',
   styleUrls: ['./assignments.scss'],
 })
@@ -45,6 +46,7 @@ export class Assignments {
   mcqs = new FormArray<McqForm>([]);
   hasSelection = computed(() => !!this.selectedAssignment());
 
+  private route = inject(ActivatedRoute);
   constructor(
     private classesSvc: TeacherClassesService,
     private topicsSvc: TeacherTopicsService,
@@ -52,6 +54,11 @@ export class Assignments {
     private mcqSvc: TeacherMcqService,
   ) {
     this.loadRefs();
+    const cid = Number(this.route.snapshot.queryParamMap.get('classId'));
+    if (cid) {
+      // allow refs to load first, then set class
+      queueMicrotask(() => this.onClassChange(cid));
+    }
   }
 
   loadRefs() {
