@@ -23,7 +23,7 @@ export class Login {
     console.log("this.email ",this.email );
     console.log("this.password ",this.password );
     
-    if (this.email === 'admin@example.com' && this.password === '1234') {
+    if (this.email === '1234' && this.password === '1234') {
       this.router.navigate(['/app/admin/dashboard']);
     } else if (this.email === 'student@example.com' && this.password === '1234') {
       this.router.navigate(['/app/student/home']);
