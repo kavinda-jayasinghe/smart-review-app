@@ -1,12 +1,12 @@
 <div class="dashboard-container">
   <div class="header-row">
     <h2>My Classes</h2>
-     <button class="btn primary" (click)="addClass()">Add Class</button>
+    <button class="btn primary" (click)="openModal(addClassModal)">Add Class</button>
   </div>
 
   <div class="class-grid">
     <div class="class-card" *ngFor="let c of classes">
-      <img src="https://i.pinimg.com/736x/ac/c9/7c/acc97c4f6ba2fc68266b7e687511abca.jpg" [alt]="c.title" class="class-img" />
+      <img [src]="c.image" [alt]="c.title" class="class-img" />
       <div class="class-info">
         <h3>{{ c.code }}</h3>
         <p class="subtitle">{{ c.title }}</p>
@@ -17,43 +17,52 @@
   </div>
 </div>
 
-
-
 <!-- Add Class Modal -->
-<!-- <ng-template #addClassModal let-modal>
+<ng-template #addClassModal let-modal>
   <div class="modal-header">
     <h5 class="modal-title">Add New Class</h5>
     <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
   </div>
 
   <div class="modal-body">
-    <form [formGroup]="classForm" class="needs-validation">
+    <form #classForm="ngForm" (ngSubmit)="saveClass(modal)">
       <div class="mb-3">
         <label class="form-label fw-medium">Class Name</label>
-        <input type="text" class="form-control" formControlName="className" placeholder="Enter class name" />
+        <input
+          type="text"
+          class="form-control"
+          name="className"
+
+          required
+          placeholder="Enter class name"
+        />
       </div>
 
       <div class="mb-3">
         <label class="form-label fw-medium">Description</label>
-        <textarea class="form-control" formControlName="description" rows="3" placeholder="Enter description"></textarea>
+        <textarea
+          class="form-control"
+          name="description"
+
+          rows="3"
+          placeholder="Enter description"
+        ></textarea>
       </div>
 
       <div class="mb-3">
         <label class="form-label fw-medium">Display Picture</label>
-        <input type="file" class="form-control" (change)="onImageSelected($event)" accept="image/*" />
+        <input
+          type="file"
+          class="form-control"
+          (change)="onImageSelected($event)"
+          accept="image/*"
+        />
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Class</button>
       </div>
     </form>
   </div>
-
-  <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancel</button>
-    <button
-      type="button"
-      class="btn btn-primary"
-      (click)="saveClass(modal)"
-      [disabled]="!classForm.valid"
-    >
-      Save Class
-    </button>
-  </div>
-</ng-template> -->
+</ng-template>

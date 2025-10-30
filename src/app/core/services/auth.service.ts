@@ -18,13 +18,12 @@ function readInitialToken(): string | null {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private _token = signal<string | null>(typeof localStorage !== 'undefined' ? readInitialToken() : null);
-  ngOn
   token() { return this._token(); }
   isLoggedIn() { return !!this._token(); }
 
   login(email: string, _password: string) {
     // TODO: replace with real API call to obtain JWT
-    const fake = 'eyJhbGciOiJIUzI1NiJ9.eyJST0xFUyI6WyJST0xFX1RFQUNIRVIiXSwic3ViIjoidGVhY2hlckBleGFtcGxlLmNvbSIsImlhdCI6MTczOTUyOTU0MywiZXhwIjoxNzQwMTM0MzQzfQ.mhzJW-bR0c7zEbX0AbwSOekqAWzF6XbiAi07yMzFIZY'; // replace with server token
+    const fake = 'eyJhbGciOiJIUzUxMiJ9.eyJST0xFUyI6WyJURUFDSEVSIl0sInN1YiI6IlNJVEhNSV9XIiwiaWF0IjoxNzYxODA1MDE3LCJleHAiOjE3NjIxNjUwMTd9.dPqX4d8PfXCHK2M3BVuq1Rkx4OB_iQrXxfchAstDgzI2B15iEAkb9jgp_fnQlABz8dycvj3xCS1_F3m-yoSBvQ'; // replace with server token
     this.setToken(fake);
     return true;
   }
