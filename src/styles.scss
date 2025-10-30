@@ -5,6 +5,8 @@
 @use 'styles/_typography' as *;
 @use 'styles/_layout' as *;
 @use 'styles/_utilities' as *;
+@import "bootstrap/dist/css/bootstrap.min.css";
+
 
 // 2) Then write rules that consume those modules
 html {

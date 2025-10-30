@@ -1,7 +1,7 @@
 <div class="dashboard-container">
     <div class="header-row">
       <h2>My Classes</h2>
-      <button class="btn primary" (click)="openModal(addClassModal)">Add Class</button>
+      <button class="btn primary" (click)="openModal()">Add Class</button>
     </div>
   
     <div class="class-grid">
@@ -66,3 +66,39 @@
       </form>
     </div>
   </ng-template>
+
+  <!-- Overlay -->
+<div class="modal-backdrop" *ngIf="isModalOpen" (click)="closeModal()"></div>
+
+<!-- Modal -->
+<div class="modal" *ngIf="isModalOpen">
+  <div class="modal-content">
+    <h2>Simple Modal</h2>
+    <p>This modal works without Bootstrap or Material!</p>
+
+    <div class="actions">
+      <button class="close-btn" (click)="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+<button (click)="openModal()">Click</button>
+ 
+<!-- Overlay -->
+<div
+  class="modal-backdrop"
+  *ngIf="isModalOpen"
+  (click)="closeModal()"
+></div>
+ 
+<!-- Modal -->
+<div class="modal" *ngIf="isModalOpen">
+  <div class="modal-content">
+    <h2>Simple Modal</h2>
+    <p>This modal works with no Bootstrap or Material!</p>
+ 
+    <div class="actions">
+      <button (click)="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+ 

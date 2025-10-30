@@ -13,7 +13,7 @@ import { NgbModal, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
   styleUrl: './classes.component.scss'
 })
 export class ClassesComponent {
-
+  isModalOpen = false;
   classes: any[] = [];
       constructor(private teacherService: TeacherService,private modalService: NgbModal) {}
       ngOnInit(): void {
@@ -29,13 +29,13 @@ export class ClassesComponent {
     }
     
   
-    openModal(ngTemplate: TemplateRef<any>): void {
-      this.modalService.open(ngTemplate, {
-        size: 'lg',
-        backdrop: 'static',
-        keyboard: false
+    openModal(): void {
+      console.log('Button clicked!');
+      this.isModalOpen = true;
+    }
   
-      });
+    closeModal(): void {
+      this.isModalOpen = false;
     }
     onImageSelected(event: any): void {
       // const file = event.target.files[0];
@@ -61,5 +61,7 @@ export class ClassesComponent {
     addClass(){
   
     }
+
+
   
 }
