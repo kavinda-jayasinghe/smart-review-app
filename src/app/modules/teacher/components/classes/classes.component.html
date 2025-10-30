@@ -5,12 +5,13 @@
   </div>
 
   <div class="class-grid">
-    <div class="class-card" *ngFor="let c of classes">
+    <div class="class-card" *ngFor="let c of classes" (click)="goToClass(c.id,c.title)">
+
       <img [src]="c.image" [alt]="c.title" class="class-img" />
       <div class="class-info">
-        <h3>{{ c.code }}</h3>
-        <p class="subtitle">{{ c.title }}</p>
-        <p class="session">Next session: {{ c.nextSession }}</p>
+        <h3>{{ c.title }}</h3>
+        <!-- <p class="subtitle">{{ c.title }}</p> -->
+        <!-- <p class="session">Next session: {{ c.nextSession }}</p> -->
         <p class="meta">{{ c.students }} students · {{ c.reviewCompletion }}% review completion</p>
       </div>
     </div>

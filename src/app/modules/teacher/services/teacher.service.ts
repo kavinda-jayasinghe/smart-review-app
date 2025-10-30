@@ -1,24 +1,28 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { API_BASE_URL, TEST_JWT_TOKEN } from '../../../shared/utility/constant';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TeacherService {
 
-  private readonly baseUrl = 'http://localhost:8090/api/v1/';
-
   constructor(private http: HttpClient) {}
+  
 
   getAllClasses(userId: number): Observable<any> {
     const headers = new HttpHeaders({
-      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJST0xFUyI6WyJST0xFX1RFQUNIRVIiXSwic3ViIjoidGVhY2hlckBleGFtcGxlLmNvbSIsImlhdCI6MTczOTUyOTU0MywiZXhwIjoxNzQwMTM0MzQzfQ.mhzJW-bR0c7zEbX0AbwSOekqAWzF6XbiAi07yMzFIZY'
+      'Authorization': 'Bearer '+TEST_JWT_TOKEN
     });
 
     return this.http.get<any>(
-      `${this.baseUrl}class?userId=${userId}`,
+      `${API_BASE_URL}/class?userId=${userId}`,
       { headers }
     );
   }
+  createClass(formData: FormData): Observable<any> {
+    return this.http.post<any>(`${API_BASE_URL}/class`, formData);
+  }
+
 }

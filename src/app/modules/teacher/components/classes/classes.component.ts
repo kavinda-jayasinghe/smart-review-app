@@ -4,6 +4,9 @@ import { TeacherService } from '../../services/teacher.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { NgbModal, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
+import { JwtService } from '../../../../core/service/jwt-service';
+import { Router } from '@angular/router';
+import { ClassDataService } from '../../services/class-data/class-data';
 
 @Component({
   selector: 'app-classes',
@@ -13,19 +16,57 @@ import { NgbModal, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
   styleUrl: './classes.component.scss'
 })
 export class ClassesComponent {
-
-  classes: any[] = [];
-  constructor(private teacherService: TeacherService,private modalService: NgbModal) {}
-    ngOnInit(): void {
-
-  }
-
-  // New class object
+  classes: any[]=[] ;
+  logedUserId: number|null = null;
   newClass = {
     className: '',
     description: '',
     dp: null as File | null
   };
+   classObj = {
+    className: '',
+    id: 0,
+
+  };
+  constructor(private teacherService: TeacherService,
+    
+    private modalService: NgbModal,
+    private jwtService: JwtService,
+    private router: Router,
+     private classDataService: ClassDataService,
+  ) {
+
+  }
+
+  ngOnInit(): void {
+        this.logedUserId = this.jwtService.getLogedUserId();  
+         this.loadClasses();
+  }
+
+  loadClasses(): void {
+    this.teacherService.getAllClasses(this.logedUserId!).subscribe({
+      next: (res) => {
+       if (res.body && Array.isArray(res.body)) {
+          this.classes = res.body.map((c: any) => ({
+            id: c.id,
+            title: c.className,
+            description: c.description,
+            code: 'C' + c.id,
+            image: c.dp ? `data:image/jpeg;base64,${c.dp}` : 'https://via.placeholder.com/200',
+            nextSession: 'TBA',
+            students: c.totalStudent || 0,
+            reviewCompletion: 0
+          }));
+        }
+      },
+      error: (err) => {
+        console.error('Error loading classes:', err);
+      }
+    });
+  }
+
+  // New class object
+
 
 
   // open modal
@@ -46,27 +87,38 @@ export class ClassesComponent {
   }
 
   // form submit
-  saveClass(form: NgForm): void {
-    if (form.valid) {
-      console.log('New class submitted:', this.newClass);
-      // TODO: Call your API to save this.newClass
-      this.classes.push({
-        title: this.newClass.className,
-        description: this.newClass.description,
-        image: this.newClass.dp ? URL.createObjectURL(this.newClass.dp) : 'https://via.placeholder.com/200',
-        code: 'C' + (this.classes.length + 1),
-        nextSession: 'TBA',
-        students: 0,
-        reviewCompletion: 0
-      });
-
-      // reset form
-      form.resetForm();
-      this.newClass.dp = null;
-      this.modalService.dismissAll();
-    } else {
-      console.warn('Form is invalid');
+saveClass(form: NgForm): void {
+  if (form.valid) {
+    const formData = new FormData();
+    formData.append('className', this.newClass.className);
+    formData.append('description', this.newClass.description);
+    formData.append('teacherId', this.logedUserId?this.logedUserId.toString():''); 
+    if (this.newClass.dp) {
+      formData.append('dp', this.newClass.dp); 
     }
+
+    // Call API
+    this.teacherService.createClass(formData).subscribe({
+      next: (res) => {
+        this.loadClasses();
+        console.log(' Class created successfully:', res);
+        this.modalService.dismissAll();
+        form.resetForm();
+        this.newClass.dp = null;
+      },
+      error: (err) => {
+        console.error(' Error creating class:', err);
+      }
+    });
+  } else {
+    console.warn('Form is invalid');
   }
-  
+}
+
+  goToClass(classId: number,className:string): void {
+    this.classObj.className=className;
+    this.classObj.id=classId;
+    this.classDataService.setClass(this.classObj);
+    this.router.navigate([`/app/teacher/classes/${classId}`]);
+  }
 }

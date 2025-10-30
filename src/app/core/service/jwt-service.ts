@@ -29,6 +29,15 @@ export class JwtService {
     const decoded = this.decodeToken(token);
     return decoded?.ROLES[0] || null;
   }
+  getLogedUserId(): number | null {
+    const token = this.getToken();
+    console.log("token",token);
+    
+    if (!token) return null;
+
+    const decoded = this.decodeToken(token);
+    return decoded?.userId || null;
+  }
 
   // Optional: Get username/email from token
   getEmail(): string | null {
