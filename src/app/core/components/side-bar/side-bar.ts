@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterModule, RouterOutlet } from '@angular/router';
+import { RouterModule, RouterOutlet, RouterLink } from '@angular/router';
 import { MatIconModule, MatIcon } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { NgForm } from '@angular/forms';
@@ -7,7 +7,7 @@ import { JwtService } from '../../service/jwt-service';
 
 @Component({
   selector: 'app-side-bar',
-  imports: [MatIcon, CommonModule],
+  imports: [MatIcon, CommonModule, RouterLink],
   templateUrl: './side-bar.html',
   styleUrl: './side-bar.scss',
 })
