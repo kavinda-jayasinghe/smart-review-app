@@ -14,6 +14,7 @@ const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: TeacherDashboardComponent },
       { path: 'classes', component: ClassesComponent },
+      { path: 'support', component: ClassesComponent },
       { path: 'message', component: MessagesComponent },
       { path: 'classes/:id', component: ClassDetails }
     ],

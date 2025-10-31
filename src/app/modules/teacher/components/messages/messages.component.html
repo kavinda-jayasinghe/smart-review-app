@@ -1,100 +1,152 @@
-<div class="container-fluid">
-  <div class="row">
+<div class="container-fluid h-100">
+  <div class="row h-100">
 
     <!-- LEFT: Conversation List + Search -->
-    <div class="col-md-4 border-end p-3" style="height: 80vh; overflow-y: auto;">
-      <h5>Messages</h5>
+    <div class="col-md-4 border-end p-3 bg-light" style="height: 80vh; overflow-y: auto;">
+      <h5 class="fw-bold text-primary mb-3">Messages</h5>
 
       <!-- Search -->
       <div class="mb-3 position-relative">
         <input
           type="text"
-          class="form-control"
+          class="form-control rounded-pill ps-4 shadow-sm"
           placeholder="Search users..."
           [(ngModel)]="searchTerm"
           (input)="onSearchInput()"
           autocomplete="off"
+          style="height: 42px;"
         />
-        <div *ngIf="filteredSuggestions.length" class="dropdown-menu show w-100">
+        <i class="bi bi-search position-absolute top-50 start-3 translate-middle-y text-muted" style="font-size: 0.9rem; z-index: 10;"></i>
+        
+        <div *ngIf="filteredSuggestions.length" class="dropdown-menu show w-100 border-0 shadow-lg mt-1">
           <button
             *ngFor="let u of filteredSuggestions"
-            class="dropdown-item"
+            class="dropdown-item py-2 d-flex align-items-center"
             (click)="selectFromSearch(u)"
+            style="font-size: 0.95rem;"
           >
-            {{ u.fullName }} <small class="text-muted">({{ u.role }})</small>
+            <img [src]=" 'assets/default-avatar.png'" class="rounded-circle me-2" width="32" height="32">
+            <div>
+              <div class="fw-semibold">{{ u.fullName }}</div>
+              <small class="text-muted">({{ u.role }})</small>
+            </div>
           </button>
         </div>
       </div>
 
       <!-- Chat List -->
       <div *ngFor="let chat of conversationUsers"
-           class="d-flex align-items-center p-2 border-bottom cursor-pointer"
-           (click)="openChatWith(chat.userId, chat.fullName)">
+           class="d-flex align-items-center p-3 rounded-3 mb-2 cursor-pointer transition-all hover-bg"
+           (click)="openChatWith(chat.userId, chat.fullName)"
+           style="transition: background-color 0.2s;">
         <img [src]="chat.profilePic || 'assets/default-avatar.png'"
-             class="rounded-circle me-2" width="40" height="40">
-        <div class="flex-grow-1">
-          <strong>{{ chat.fullName }}</strong>
-          <small class="text-muted d-block">
+             class="rounded-circle me-3 flex-shrink-0" width="48" height="48" style="object-fit: cover;">
+        <div class="flex-grow-1 min-w-0">
+          <strong class="d-block text-truncate" style="font-size: 1rem;">{{ chat.fullName }}</strong>
+          <small class="text-muted d-block text-truncate">
             {{ chat.lastMessageDate | date:'short' }}
           </small>
         </div>
+
       </div>
     </div>
 
     <!-- RIGHT: Chat Window -->
-    <div class="col-md-8 p-3" *ngIf="selectedChatUser as user; else noChat">
-      <div class="d-flex align-items-center mb-3">
+    <div class="col-md-8 p-0 d-flex flex-column" *ngIf="selectedChatUser as user; else noChat" style="height: 80vh;">
+      
+      <!-- Chat Header -->
+      <div class="d-flex align-items-center p-3 border-bottom bg-white shadow-sm">
         <img [src]="user.profilePic || 'assets/default-avatar.png'"
-             class="rounded-circle me-2" width="50" height="50">
-        <h5 class="mb-0">{{ user.fullName }}</h5>
+             class="rounded-circle me-3" width="50" height="50" style="object-fit: cover;">
+        <div class="flex-grow-1">
+          <h5 class="mb-0 fw-bold">{{ user.fullName }}</h5>
+          <small class="text-success">● Online</small>
+        </div>
       </div>
 
-      <!-- Messages -->
-      <div class="chat-box border p-3 mb-3" style="height: 50vh; overflow-y: auto;">
-        <div *ngFor="let msg of messages" class="mb-3">
+      <!-- Messages Area -->
+      <div class="flex-grow-1 p-4 chat-box bg-chat" style="overflow-y: auto; background: #f8f9fa;">
+        <div *ngFor="let msg of messages" class="mb-4 animate__animated animate__fadeIn">
           <div [class]="'d-flex ' + (isSentByMe(msg) ? 'justify-content-end' : 'justify-content-start')">
-            <div [class]="'p-2 rounded max-w-75 ' + (isSentByMe(msg) ? 'bg-primary text-white' : 'bg-light')"
-                 style="max-width: 70%;">
+            <div [class]="'p-3 rounded-3 shadow-sm position-relative ' + 
+                         (isSentByMe(msg) ? 'bg-primary text-white' : 'bg-white text-dark')"
+                 style="max-width: 70%; word-wrap: break-word; border-radius: 18px;">
+
+              <!-- Sender Name (Only for received) -->
+              <small *ngIf="!isSentByMe(msg)" class="d-block fw-bold mb-1 opacity-75">
+                {{ msg.senderName }}
+              </small>
 
               <!-- Normal View -->
               <div *ngIf="!msg.isEditing">
-                <small class="d-block fw-bold">{{ isSentByMe(msg) ? 'You' : msg.senderName }}</small>
-                <div class="d-flex align-items-center justify-content-between">
-                  <span>{{ msg.content }}</span>
-                  <div *ngIf="isSentByMe(msg)" class="ms-2">
-                    <button class="btn btn-sm btn-outline-light p-0 px-1" (click)="editMessage(msg)">Edit</button>
-                    <button class="btn btn-sm btn-outline-light p-0 px-1 ms-1" (click)="deleteMessage(msg)">Delete</button>
+                <div class="d-flex align-items-center justify-content-between gap-2">
+                  <span class="d-block">{{ msg.content }}</span>
+                  <div *ngIf="isSentByMe(msg)" class="d-flex gap-1 ms-2">
+                    <button class="btn btn-sm text-white opacity-75 p-0 px-1" 
+                            style="font-size: 0.7rem;" (click)="editMessage(msg)">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="btn btn-sm text-white opacity-75 p-0 px-1" 
+                            style="font-size: 0.7rem;" (click)="deleteMessage(msg)">
+                      <i class="bi bi-trash"></i>
+                    </button>
                   </div>
                 </div>
-                <small class="d-block text-end opacity-75" style="font-size: 0.7rem;">
+                <small class="d-block text-end mt-1" 
+                       [class]="isSentByMe(msg) ? 'text-white opacity-75' : 'text-muted'"
+                       style="font-size: 0.7rem;">
                   {{ msg.date | date:'short' }}
                 </small>
               </div>
 
               <!-- Edit Mode -->
-              <div *ngIf="msg.isEditing" class="d-flex align-items-center">
-                <input [(ngModel)]="msg.editContent" class="form-control form-control-sm me-1" />
-                <button class="btn btn-sm btn-success p-0 px-1" (click)="saveEdit(msg)">Save</button>
-                <button class="btn btn-sm btn-secondary p-0 px-1 ms-1" (click)="cancelEdit(msg)">Cancel</button>
+              <div *ngIf="msg.isEditing" class="d-flex align-items-center gap-1">
+                <input [(ngModel)]="msg.editContent" 
+                       class="form-control form-control-sm rounded-pill" 
+                       style="font-size: 0.9rem;" />
+                <button class="btn btn-success btn-sm rounded-circle p-1" 
+                        (click)="saveEdit(msg)" title="Save">
+                  <i class="bi bi-check-lg"></i>
+                </button>
+                <button class="btn btn-secondary btn-sm rounded-circle p-1" 
+                        (click)="cancelEdit(msg)" title="Cancel">
+                  <i class="bi bi-x-lg"></i>
+                </button>
               </div>
             </div>
           </div>
         </div>
 
-        <p *ngIf="messages.length === 0" class="text-muted text-center">No messages yet.</p>
+        <p *ngIf="messages.length === 0" class="text-center text-muted mt-5">
+          <em>No messages yet. Say hello! 👋</em>
+        </p>
       </div>
 
-      <!-- Send -->
-      <div class="input-group">
-        <textarea class="form-control" [(ngModel)]="content" rows="2"
-                  placeholder="Type a message..." (keydown.enter.shift)="send()"></textarea>
-        <button class="btn btn-primary" (click)="send()" [disabled]="!content.trim()">Send</button>
+      <!-- Send Message -->
+      <div class="p-3 border-top bg-white">
+        <div class="input-group shadow-sm">
+          <textarea class="form-control border-0" 
+                    [(ngModel)]="content" 
+                    rows="2"
+                    placeholder="Type a message..." 
+                    (keydown.enter.shift)="send()"
+                    style="resize: none; border-radius: 20px; padding-right: 60px;"></textarea>
+          <button class="btn btn-primary rounded-circle position-absolute end-0 me-3 translate-middle-y"
+                  style="width: 40px; height: 40px; top: 50%; z-index: 10;"
+                  (click)="send()" 
+                  [disabled]="!content.trim()">
+            <i class="bi bi-send"></i>
+          </button>
+        </div>
       </div>
     </div>
 
+    <!-- No Chat Selected -->
     <ng-template #noChat>
-      <div class="col-md-8 d-flex align-items-center justify-content-center text-muted" style="height: 80vh;">
-        Select a user to start chatting
+      <div class="col-md-8 d-flex flex-column align-items-center justify-content-center text-muted bg-light" style="height: 80vh;">
+        <i class="bi bi-chat-dots display-1 mb-3 text-primary opacity-25"></i>
+        <h4>Select a conversation to start messaging</h4>
+        <p class="text-center">Choose someone from the list to begin chatting.</p>
       </div>
     </ng-template>
 
