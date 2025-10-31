@@ -1,0 +1,6 @@
+// src/app/core/constants/constants.ts
+
+export const API_BASE_URL = 'http://localhost:8090/api/v1';
+
+export const TEST_JWT_TOKEN =
+  'eyJhbGciOiJIUzUxMiJ9.eyJST0xFUyI6WyJURUFDSEVSIl0sInVzZXJJZCI6OSwiZW1haWwiOiJudXdhbi5zYXJhbmF0aEBleGFtcGxlLmNvbSIsInN1YiI6Ik5VV0FOX1RFQUNIRVIiLCJpYXQiOjE3NjE4Mzk1MzcsImV4cCI6MTc2MTg3NTUzN30.glUJN1etzg-33s-V7sYUr_6UH4qadsTRj5eurQGXsLtGY6X4orpOsvUawXyRSqGsqN7N3fziQJsbYvZSUWsmXg';
