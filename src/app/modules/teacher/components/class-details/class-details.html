@@ -1,0 +1,77 @@
+<!-- Top bar could be part of your app shell. Below is the page body. -->
+<div class="breadcrumb">
+  <a class="crumb">Classes</a>
+  <span class="sep">/</span>
+  <span class="crumb current">{{ title }}</span>
+</div>
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-3">
+  <li class="nav-item">
+    <button 
+      class="nav-link" 
+      [class.active]="is('overview')" 
+      (click)="setTab('overview')">
+      Overview
+    </button>
+  </li>
+
+  <li class="nav-item">
+    <button 
+      class="nav-link" 
+      [class.active]="is('topics')" 
+      (click)="setTab('topics')">
+      Topics
+    </button>
+  </li>
+
+  <li class="nav-item">
+    <button 
+      class="nav-link" 
+      [class.active]="is('assignments')" 
+      (click)="setTab('assignments')">
+      Assignments
+    </button>
+  </li>
+
+  <li class="nav-item">
+    <button 
+      class="nav-link" 
+      [class.active]="is('students')" 
+      (click)="setTab('students')">
+      Students
+    </button>
+  </li>
+</ul>
+
+
+<section *ngIf="is('overview')" class="overview">
+<app-overview></app-overview>
+</section>
+
+<!-- Topics placeholder -->
+<section *ngIf="is('topics')" class="overview">
+  <app-topic></app-topic>
+</section>
+
+<!-- Assignments placeholder -->
+<section *ngIf="is('assignments')" class="assignments-section">
+  <app-assignments-teacher></app-assignments-teacher>
+</section>
+
+
+<!-- Students placeholder -->
+<section *ngIf="is('students')" class="placeholder">
+  <h3>Students</h3>
+<app-students></app-students>
+</section>
+
+
+<!-- 
+
+ <div class="class-details-container" *ngIf="classData">
+      <h2>{{ classData.className }}</h2>
+      <img [src]="classData.image" alt="Class" class="img-fluid mb-3 rounded" />
+      <p>{{ classData.description }}</p>
+      <p><strong>Total Students:</strong> {{ classData.totalStudent }}</p>
+    </div> -->

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TEST_JWT_TOKEN } from '../../../../shared/utility/constant';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,7 @@ import { Router } from '@angular/router';
 export class Login {
   email = '';
   password = '';
-  private fake = 'eyJhbGciOiJIUzUxMiJ9.eyJST0xFUyI6WyJURUFDSEVSIl0sInN1YiI6IlNJVEhNSV9XIiwiaWF0IjoxNzYxODA1MDE3LCJleHAiOjE3NjIxNjUwMTd9.dPqX4d8PfXCHK2M3BVuq1Rkx4OB_iQrXxfchAstDgzI2B15iEAkb9jgp_fnQlABz8dycvj3xCS1_F3m-yoSBvQ'; // replace with server token
+ 
     
 
   constructor(private router: Router) {}
@@ -28,7 +29,7 @@ export class Login {
     } else if (this.email === 'student@example.com' && this.password === '1234') {
       this.router.navigate(['/app/student/home']);
     } else if (this.email === '1111' && this.password === '1111') { //teacher@example.com
-      localStorage.setItem('token', this.fake);
+      localStorage.setItem('token', TEST_JWT_TOKEN);
       console.log("teacher login");
       this.router.navigate(['/app/teacher/dashboard']);
     } else {
