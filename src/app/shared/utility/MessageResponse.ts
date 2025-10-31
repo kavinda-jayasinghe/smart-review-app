@@ -6,5 +6,7 @@ export interface MessageResponse {
   receiverId: number;
   receiverName: string;
   content: string;
-  date: string; // ISO string
+  date: string;
+  isEditing?: boolean;
+  editContent?: string;
 }

@@ -1,9 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { API_BASE_URL, TEST_JWT_TOKEN } from '../../../shared/utility/constant';
 import { MessageDetails } from '../../../shared/utility/MessageDetails';
-import { map } from 'rxjs/operators'; // ADD THIS
+import { catchError, map } from 'rxjs/operators'; // ADD THIS
 import { APIResponse } from '../../../shared/utility/APIResponse';
 import { MessageUser } from '../../../shared/utility/MessageUser';
 import { MessageUserDto } from '../../../shared/utility/MessageUserDto';
@@ -44,39 +44,57 @@ export class TeacherService {
   }
 
 
-///msg
+///---------------------------------------------------------------------------------msg
 
 private readonly BASE_URL = 'http://localhost:8090/api/v1/message';
-suggest(term: string): Observable<UserSuggestion[]> {
-    return this.http.get<UserSuggestion[]>(`${this.BASE_URL}/suggest`, { params: { q: term } });
+// Send message
+  send(msg: MessageDetails): Observable<MessageResponse> {
+    return this.http.post<APIResponse<MessageResponse>>(this.BASE_URL, msg)
+      .pipe(map(res => res.body));
   }
 
-// teacher.service.ts
-getAllUsers(): Observable<UserSuggestion[]> {
-  return this.http
-    .get<APIResponse<UserSuggestion[]>>(`${this.BASE_URL}/suggest-all`)
-    .pipe(map(res => res.body)); // ← res.body, not res.data
-}
+  // Get chat history
+getChatMessages(currentUserId: number, partnerUserId: number): Observable<MessageResponse[]> {
+    return this.http
+      .get<any>(`${this.BASE_URL}/get-all-messages`, {
+        params: { currentUserId, partnerUserId }
+      })
+      .pipe(
+        map(res => {
+          const messages = res.body || [];
+          return messages.map((m: any) => ({
+            id: m.id,
+            senderId: m.fromUserId,
+            senderName: m.fromUserName || 'Unknown',
+            receiverId: m.toUserId,
+            receiverName: m.toUserName || 'Unknown',
+            content: m.content,
+            date: m.createdAt || new Date().toISOString(),
+            isEditing: false
+          }));
+        }),
+        catchError(() => of([]))
+      );
+  }
 
-  send(msg: MessageDetails): Observable<any> {
-    return this.http.post(`${this.BASE_URL}`, msg);
+
+  // Update message
+  updateMessage(id: number, content: string): Observable<MessageResponse> {
+    return this.http.put<APIResponse<MessageResponse>>(`${this.BASE_URL}/${id}`, `"${content}"`)
+      .pipe(map(res => res.body));
   }
-getConversationUsers(userId: number): Observable<MessageUser[]> {
-  return this.http.get<APIResponse<MessageUserDto[]>>(`${this.BASE_URL}/${userId}`)
-    .pipe(
-      map(res => res.body.map(dto => ({
-        userId: dto.userId,
-        firstName: dto.firstName,
-        lastName: dto.lastName,
-        fullName: `${dto.firstName} ${dto.lastName}`,
-        profilePic: dto.profilePic,
-        lastMessageDate: dto.lastMessageDate
-      })))
-    );
+
+  // Delete message
+  deleteMessage(id: number): Observable<any> {
+    return this.http.delete<APIResponse<string>>(`${this.BASE_URL}/${id}`);
   }
-  getChatMessages(currentUserId: number, partnerUserId: number): Observable<MessageResponse[]> {
-  return this.http
-    .get<APIResponse<MessageResponse[]>>(`${this.API_BASE_URL}/get-all-messages/${currentUserId}/${partnerUserId}`)
-    .pipe(map(res => res.body));
-}
+
+  // Get all users (for search)
+  getAllUsers(): Observable<UserSuggestion[]> {
+    return of([
+      { id: 2, fullName: 'Nimal Perera', role: 'TEACHER' },
+      { id: 3, fullName: 'Sithmi W.', role: 'STUDENT' }
+    ]);
+  }
+
 }

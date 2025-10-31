@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';  // THIS LINE IS REQUIRED
+import { MessageResponse } from '../../../../shared/utility/MessageResponse';
+import { MessageDetails } from '../../../../shared/utility/MessageDetails';
+import { TeacherService } from '../../services/teacher.service';
 interface Message {
   id: number;
   senderId: number;
@@ -35,50 +38,47 @@ interface UserSuggestion {
   styleUrl: './messages.component.scss'
 })
 export class MessagesComponent {
-private readonly currentUser = { id: 1, fullName: 'You (John)' };
-
-  // UI State
-  searchTerm = '';
+searchTerm = '';
   content = '';
   selectedChatUser: ChatUser | null = null;
   conversationUsers: ChatUser[] = [];
   filteredSuggestions: UserSuggestion[] = [];
-  messages: Message[] = [];
+  messages: MessageResponse[] = [];
+  private allUsers: UserSuggestion[] = [];
 
-  // Hard-coded data
-  private allUsers: UserSuggestion[] = [
-    { id: 2, fullName: 'Nimal Perera', role: 'TEACHER' },
-    { id: 3, fullName: 'Sithmi W.', role: 'STUDENT' },
-    { id: 4, fullName: 'Kavindu Silva', role: 'STUDENT' },
-    { id: 5, fullName: 'Chalana F.', role: 'ADMIN' }
-  ];
+  // Current User
+  private readonly currentUser = { id: 1, fullName: 'John Doe' } as const;
 
-  private hardCodedChats: { [key: number]: Message[] } = {
-    2: [
-      { id: 1, senderId: 2, senderName: 'Nimal Perera', receiverId: 1, receiverName: 'You', content: 'Hello!', date: '2025-10-31T10:00:00Z' },
-      { id: 2, senderId: 1, senderName: 'You', receiverId: 2, receiverName: 'Nimal Perera', content: 'Hi Nimal!', date: '2025-10-31T10:01:00Z' }
-    ],
-    3: [
-      { id: 3, senderId: 3, senderName: 'Sithmi W.', receiverId: 1, receiverName: 'You', content: 'Assignment done?', date: '2025-10-30T09:00:00Z' }
-    ]
-  };
+  constructor(private teacherService: TeacherService) {}
 
   ngOnInit(): void {
     this.loadConversationUsers();
+    this.loadAllUsersForSearch();
   }
 
-  // Load conversation list from hard-coded data
+  // Load conversation list (from backend or hard-coded)
   private loadConversationUsers(): void {
-    this.conversationUsers = this.allUsers.map(user => {
-      const lastMsg = this.hardCodedChats[user.id]?.[this.hardCodedChats[user.id].length - 1];
-      return {
-        userId: user.id,
-        firstName: user.fullName.split(' ')[0],
-        lastName: user.fullName.split(' ').slice(1).join(' '),
-        fullName: user.fullName,
-        profilePic: null,
-        lastMessageDate: lastMsg?.date || new Date().toISOString()
-      };
+    // You can replace with real API later
+    this.teacherService.getAllUsers().subscribe({
+      next: (users) => {
+        this.allUsers = users;
+        this.conversationUsers = users.map(u => ({
+          userId: u.id,
+          firstName: u.fullName.split(' ')[0],
+          lastName: u.fullName.split(' ').slice(1).join(' '),
+          fullName: u.fullName,
+          profilePic: null,
+          lastMessageDate: new Date().toISOString()
+        }));
+      }
+    });
+  }
+
+  private loadAllUsersForSearch(): void {
+    this.teacherService.getAllUsers().subscribe({
+      next: (users) => {
+        this.allUsers = users;
+      }
     });
   }
 
@@ -96,17 +96,20 @@ private readonly currentUser = { id: 1, fullName: 'You (John)' };
     this.filteredSuggestions = [];
   }
 
-  // Open Chat
+  // Open Chat → Load Messages
   openChatWith(userId: number, fullName: string): void {
     const existing = this.conversationUsers.find(u => u.userId === userId);
     if (existing) {
       this.selectedChatUser = existing;
     } else {
-      const nameParts = fullName.split(' ');
+      const nameParts = fullName.trim().split(/\s+/);
+      const firstName = nameParts[0] || 'Unknown';
+      const lastName = nameParts.slice(1).join(' ') || '';
+
       const newUser: ChatUser = {
         userId,
-        firstName: nameParts[0],
-        lastName: nameParts.slice(1).join(' '),
+        firstName,
+        lastName,
         fullName,
         profilePic: null,
         lastMessageDate: new Date().toISOString()
@@ -115,64 +118,84 @@ private readonly currentUser = { id: 1, fullName: 'You (John)' };
       this.selectedChatUser = newUser;
     }
 
-    // Load messages
-    this.messages = [...(this.hardCodedChats[userId] || [])];
-    this.scrollToBottom();
+    // Load messages from backend
+    this.loadChatMessages(userId);
   }
+
+private loadChatMessages(partnerId: number): void {
+    this.teacherService.getChatMessages(this.currentUser.id, partnerId).subscribe({
+      next: (msgs) => {
+        this.messages = msgs;
+        this.scrollToBottom();
+      },
+      error: () => {
+        this.messages = [];
+        alert('Failed to load messages');
+      }
+    });
+  }
+  
 
   // Send Message
   send(): void {
     if (!this.selectedChatUser || !this.content.trim()) return;
 
-    const newMsg: Message = {
-      id: Date.now(),
+    const payload: MessageDetails = {
       senderId: this.currentUser.id,
       senderName: this.currentUser.fullName,
       receiverId: this.selectedChatUser.userId,
       receiverName: this.selectedChatUser.fullName,
-      content: this.content.trim(),
-      date: new Date().toISOString()
+      content: this.content.trim()
     };
 
-    this.messages.push(newMsg);
-    this.hardCodedChats[this.selectedChatUser.userId] = this.messages;
-    this.selectedChatUser.lastMessageDate = newMsg.date;
-    this.sortConversationList();
-    this.content = '';
-    this.scrollToBottom();
+    this.teacherService.send(payload).subscribe({
+      next: (savedMsg) => {
+        this.messages.push(savedMsg);
+        this.content = '';
+        this.selectedChatUser!.lastMessageDate = savedMsg.date;
+        this.sortConversationList();
+        this.scrollToBottom();
+      },
+      error: () => alert('Send failed')
+    });
   }
 
   // Edit Message
-  editMessage(msg: Message): void {
-    msg.isEditing = true;
-    msg.editContent = msg.content;
+  editMessage(msg: MessageResponse): void {
+    msg['isEditing'] = true;
+    msg['editContent'] = msg.content;
   }
 
-  saveEdit(msg: Message): void {
-    if (msg.editContent?.trim()) {
-      msg.content = msg.editContent.trim();
-    }
-    msg.isEditing = false;
-    delete msg.editContent;
+  saveEdit(msg: MessageResponse): void {
+    if (!msg['editContent']?.trim()) return;
+
+    this.teacherService.updateMessage(msg.id, msg['editContent'].trim()).subscribe({
+      next: (updated) => {
+        msg.content = updated.content;
+        msg['isEditing'] = false;
+        delete msg['editContent'];
+      }
+    });
   }
 
-  cancelEdit(msg: Message): void {
-    msg.isEditing = false;
-    delete msg.editContent;
+  cancelEdit(msg: MessageResponse): void {
+    msg['isEditing'] = false;
+    delete msg['editContent'];
   }
 
   // Delete Message
-  deleteMessage(msg: Message): void {
-    if (confirm('Delete this message?')) {
-      this.messages = this.messages.filter(m => m.id !== msg.id);
-      this.hardCodedChats[this.selectedChatUser!.userId] = this.messages;
-      if (this.messages.length === 0) {
-        this.selectedChatUser!.lastMessageDate = new Date().toISOString();
-      } else {
-        this.selectedChatUser!.lastMessageDate = this.messages[this.messages.length - 1].date;
+  deleteMessage(msg: MessageResponse): void {
+    if (!confirm('Delete this message?')) return;
+
+    this.teacherService.deleteMessage(msg.id).subscribe({
+      next: () => {
+        this.messages = this.messages.filter(m => m.id !== msg.id);
+        if (this.messages.length > 0) {
+          this.selectedChatUser!.lastMessageDate = this.messages[this.messages.length - 1].date;
+        }
+        this.sortConversationList();
       }
-      this.sortConversationList();
-    }
+    });
   }
 
   // Helpers
@@ -189,7 +212,7 @@ private readonly currentUser = { id: 1, fullName: 'You (John)' };
     }, 100);
   }
 
-  isSentByMe(msg: Message): boolean {
+  isSentByMe(msg: MessageResponse): boolean {
     return msg.senderId === this.currentUser.id;
   }
 }
