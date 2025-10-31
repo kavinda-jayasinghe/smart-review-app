@@ -8,6 +8,7 @@ import { UserSuggestion } from '../../../shared/utility/UserSuggestion';
 import { APIResponse } from '../../../shared/utility/APIResponse';
 import { MessageUser } from '../../../shared/utility/MessageUser';
 import { MessageUserDto } from '../../../shared/utility/MessageUserDto';
+import { MessageResponse } from '../../../shared/utility/MessageResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -73,4 +74,9 @@ getConversationUsers(userId: number): Observable<MessageUser[]> {
       })))
     );
   }
+  getChatMessages(currentUserId: number, partnerUserId: number): Observable<MessageResponse[]> {
+  return this.http
+    .get<APIResponse<MessageResponse[]>>(`${this.API_BASE_URL}/get-all-messages/${currentUserId}/${partnerUserId}`)
+    .pipe(map(res => res.body));
+}
 }

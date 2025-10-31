@@ -6,6 +6,7 @@ import { TeacherService } from '../../services/teacher.service';
 import { MessageDetails } from '../../../../shared/utility/MessageDetails';
 import { UserSuggestion } from '../../../../shared/utility/UserSuggestion';
 import { MessageUser } from '../../../../shared/utility/MessageUser';
+import { MessageResponse } from '../../../../shared/utility/MessageResponse';
 
 
 @Component({
@@ -23,61 +24,54 @@ searchTerm = '';
   filteredSuggestions: UserSuggestion[] = [];
   private allUsers: UserSuggestion[] = [];
 
-  // ---------- HARD-CODED CURRENT USER ----------
-  private readonly currentUser = {
-    id: 1,
-    fullName: 'John Doe'
-  } as const;
+  // Chat Messages
+  messages: MessageResponse[] = [];
+
+  // Current User
+  private readonly currentUser = { id: 1, fullName: 'John Doe' } as const;
 
   constructor(private teacherService: TeacherService) {}
 
-  // -------------------------------------------------
   ngOnInit(): void {
     this.loadConversationUsers();
     this.loadAllUsersForSearch();
   }
 
-  // -------------------------------------------------
-  /** Load users you've messaged */
+  ngOnDestroy(): void {}
+
+  // Load conversation list
   private loadConversationUsers(): void {
     this.teacherService.getConversationUsers(this.currentUser.id).subscribe({
       next: (users) => {
         this.conversationUsers = users;
-      },
-      error: () => alert('Failed to load chats')
+      }
     });
   }
 
-  /** Load ALL users for search */
+  // Load all users for search
   private loadAllUsersForSearch(): void {
     this.teacherService.getAllUsers().subscribe({
       next: (users) => {
         this.allUsers = users;
-        console.log('All users loaded:', users);
-      },
-      error: (err) => console.error('Failed to load users', err)
+      }
     });
   }
 
-  // -------------------------------------------------
-  /** Called on every keystroke */
+  // Search
   onSearchInput(): void {
     const term = this.searchTerm.trim().toLowerCase();
     this.filteredSuggestions = term
-      ? this.allUsers
-          .filter(u => u.fullName.toLowerCase().includes(term))
-          .slice(0, 8)
+      ? this.allUsers.filter(u => u.fullName.toLowerCase().includes(term)).slice(0, 8)
       : [];
   }
 
-  /** Select from dropdown → open chat */
   selectFromSearch(user: UserSuggestion): void {
     this.openChatWith(user.id, user.fullName);
     this.searchTerm = '';
     this.filteredSuggestions = [];
   }
 
-  /** Open chat (from list or search) */
+  // Open Chat → Load Messages
   openChatWith(userId: number, fullName: string): void {
     const existing = this.conversationUsers.find(u => u.userId === userId);
     if (existing) {
@@ -95,22 +89,27 @@ searchTerm = '';
         profilePic: null,
         lastMessageDate: new Date().toISOString()
       };
-
       this.conversationUsers.unshift(newUser);
       this.selectedChatUser = newUser;
     }
+
+    // LOAD CHAT HISTORY
+    this.loadChatMessages(userId);
     this.sortConversationList();
   }
 
-  /** Sort by last message */
-  private sortConversationList(): void {
-    this.conversationUsers.sort((a, b) =>
-      new Date(b.lastMessageDate).getTime() - new Date(a.lastMessageDate).getTime()
-    );
+  // Load messages between currentUser and partner
+  private loadChatMessages(partnerId: number): void {
+    this.teacherService.getChatMessages(this.currentUser.id, partnerId).subscribe({
+      next: (msgs) => {
+        this.messages = msgs;
+        this.scrollToBottom();
+      },
+      error: () => alert('Failed to load messages')
+    });
   }
 
-  // -------------------------------------------------
-  /** SEND MESSAGE */
+  // Send Message
   send(): void {
     if (!this.selectedChatUser || !this.content.trim()) return;
 
@@ -124,12 +123,41 @@ searchTerm = '';
 
     this.teacherService.send(payload).subscribe({
       next: () => {
+        const newMsg: MessageResponse = {
+          id: Date.now(),
+          senderId: this.currentUser.id,
+          senderName: this.currentUser.fullName,
+          receiverId: this.selectedChatUser!.userId,
+          receiverName: this.selectedChatUser!.fullName,
+          content: this.content.trim(),
+          date: new Date().toISOString()
+        };
+
+        this.messages.push(newMsg);
         this.content = '';
-        this.selectedChatUser!.lastMessageDate = new Date().toISOString();
+        this.selectedChatUser!.lastMessageDate = newMsg.date;
         this.sortConversationList();
-        alert('Message sent!');
-      },
-      error: () => alert('Send failed')
+        this.scrollToBottom();
+      }
     });
+  }
+
+  // Helpers
+  private sortConversationList(): void {
+    this.conversationUsers.sort((a, b) =>
+      new Date(b.lastMessageDate).getTime() - new Date(a.lastMessageDate).getTime()
+    );
+  }
+
+  private scrollToBottom(): void {
+    setTimeout(() => {
+      const chatBox = document.querySelector('.chat-box');
+      if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+    }, 100);
+  }
+
+  // UI Helper
+  isSentByMe(msg: MessageResponse): boolean {
+    return msg.senderId === this.currentUser.id;
   }
 }
