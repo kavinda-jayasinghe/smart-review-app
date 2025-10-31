@@ -1,0 +1,74 @@
+/* Make it stretch to fill available width under the teacher layout */
+.topics-wrapper {
+  width: 100%;
+  max-width: 100%;
+  background-color: #f8fafc;
+}
+
+/* Search box width adjusts dynamically */
+.search-box {
+  width: 300px;
+
+  .search-input {
+    border-radius: 50px; /* ✅ fully rounded */
+    padding: 0.5rem 1rem;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+    box-shadow: none;
+
+    &:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+  }
+}
+
+
+/* Rounded inputs */
+.input-group-text {
+  border-radius: 8px 0 0 8px;
+}
+
+.form-control {
+  border-radius: 0 8px 8px 0;
+}
+
+/* Table styling */
+.table {
+  th, td {
+    vertical-align: middle;
+  }
+
+  th {
+    font-weight: 600;
+    color: #334155;
+  }
+
+  td {
+    color: #475569;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+}
+
+.modal-content {
+  border-radius: 10px;
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: #2563eb;
+  border-color: #2563eb;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+}
+
+.btn-primary:hover {
+  background-color: #1d4ed8;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #f1f5f9;
+}

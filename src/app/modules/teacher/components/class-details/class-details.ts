@@ -7,22 +7,26 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { Students } from "../../../../features/teacher/students/students";
-import { Assignments } from "../../../../features/student/assignments";
+
 import { NotFound } from "../../../../shared/components/not-found";
-import { Overview } from "../../../../features/teacher/overview/overview";
 import { ClassDataService } from '../../services/class-data/class-data';
+import { Students } from '../students/students';
+import { Overview } from '../overview/overview';
+import { Topic } from '../topic/topic';
+import { Assignments } from "../assignments/assignments";
+
 type Tab = 'overview' | 'topics' | 'assignments' | 'students';
 @Component({
   selector: 'app-class-details',
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatListModule, Students, Assignments, NotFound, Overview],
+
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatListModule, Students, Overview, Topic, Assignments],
   templateUrl: './class-details.html',
   styleUrl: './class-details.scss',
 })
 export class ClassDetails {
   classId!: number;
   classData: any;
-  title = 'Grade 10 Maths';
+  title = '';
   tab: Tab = 'overview';
 
 
@@ -40,6 +44,7 @@ export class ClassDetails {
     this.classId = Number(this.route.snapshot.paramMap.get('id'));
       this.classDataService.selectedClass$.subscribe(data => {
       this.classData = data;
+      this.title=data.className;
       console.log('Received class:', this.classData);
     });
     this.loadClassDetails();

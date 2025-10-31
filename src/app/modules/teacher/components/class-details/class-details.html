@@ -45,22 +45,20 @@
 </ul>
 
 
-Overview
 <section *ngIf="is('overview')" class="overview">
 <app-overview></app-overview>
 </section>
 
 <!-- Topics placeholder -->
-<section *ngIf="is('topics')" class="placeholder">
-  <h3>Topics</h3>
-<app-topic></app-topic>
+<section *ngIf="is('topics')" class="overview">
+  <app-topic></app-topic>
 </section>
 
 <!-- Assignments placeholder -->
-<section *ngIf="is('assignments')" class="placeholder">
-  <h3>Assignments</h3>
-<app-assignments></app-assignments>
+<section *ngIf="is('assignments')" class="assignments-section">
+  <app-assignments-teacher></app-assignments-teacher>
 </section>
+
 
 <!-- Students placeholder -->
 <section *ngIf="is('students')" class="placeholder">

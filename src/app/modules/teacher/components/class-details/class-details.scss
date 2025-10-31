@@ -20,3 +20,36 @@
     }
   }
 }
+.breadcrumb {
+  font-size: 30px;       /* Increase overall font size */
+  font-weight: 600;      /* Make text semi-bold */
+  color: #1f2937;        /* Optional: dark gray for good contrast */
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.breadcrumb .crumb {
+  font-size: 30px;     /* increase size for “Classes” */
+  font-weight: 700;    /* make it bold */
+  color: #111827;      /* dark text */
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.breadcrumb .crumb.current {
+  font-weight: 700;      
+  color: #111827;       
+}
+
+.breadcrumb .sep {
+  font-weight: 500;
+  color: #6b7280;       
+
+}
+.assignments-section {
+  width: 100%;
+  background-color: #f9fafb; /* light neutral page background */
+  padding: 1rem 0;
+}
