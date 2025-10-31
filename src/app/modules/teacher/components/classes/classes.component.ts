@@ -47,7 +47,12 @@ export class ClassesComponent {
     this.teacherService.getAllClasses(this.logedUserId!).subscribe({
       next: (res) => {
        if (res.body && Array.isArray(res.body)) {
-          this.classes = res.body.map((c: any) => ({
+        this.classes = res.body
+          .filter((c: any) => {
+            const firstChar = c.className?.charAt(0).toLowerCase();
+            return firstChar !== 'f' && firstChar !== 'm' && firstChar !== 'v';
+          })
+          .map((c: any) => ({
             id: c.id,
             title: c.className,
             description: c.description,

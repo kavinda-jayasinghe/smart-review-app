@@ -5,6 +5,7 @@ import { TeacherDashboardComponent } from './components/teacher-dashboard/teache
 import { ClassesComponent } from './components/classes/classes.component';
 import { MessagesComponent } from './components/messages/messages.component';
 import { ClassDetails } from './components/class-details/class-details';
+import { Materials } from './components/materials/materials';
 
 const routes: Routes = [
   {
@@ -14,7 +15,7 @@ const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: TeacherDashboardComponent },
       { path: 'classes', component: ClassesComponent },
-      { path: 'support', component: ClassesComponent },
+      { path: 'support', component: Materials },
       { path: 'message', component: MessagesComponent },
       { path: 'classes/:id', component: ClassDetails }
     ],
