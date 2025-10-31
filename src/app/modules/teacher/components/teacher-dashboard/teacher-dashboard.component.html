@@ -1,20 +1,32 @@
-<button (click)="openModal()">Click</button>
+<div class="page">
+  <h1 class="title">Welcome back, {{ name }}</h1>
 
-<!-- Overlay -->
-<div
-  class="modal-backdrop"
-  *ngIf="isModalOpen"
-  (click)="closeModal()"
-></div>
+  <h3 class="section-h">Summary</h3>
+  <div class="metrics">
+    <div class="card" *ngFor="let m of metrics">
+      <div class="label">{{ m.label }}</div>
+      <div class="value">{{ m.value }}</div>
+    </div>
+  </div>
 
-<!-- Modal -->
-<div class="modal" *ngIf="isModalOpen">
-  <div class="modal-content">
-    <h2>Simple Modal</h2>
-    <p>This modal works with no Bootstrap or Material!</p>
-
-    <div class="actions">
-      <button (click)="closeModal()">Close</button>
+  <h3 class="section-h">Today at a glance</h3>
+  <div class="list">
+    <div class="row" *ngFor="let r of glance">
+      <div class="col 10 left">
+        <div class="square" [class.cbook]="r.icon==='bookmark'" [class.cassign]="r.icon==='assignment'">
+          <!-- simple icon shapes using CSS, no library needed -->
+          <div class="glyph" [class.g-class]="r.icon==='class'"
+                             [class.g-assignment]="r.icon==='assignment'"
+                             [class.g-bookmark]="r.icon==='bookmark'"></div>
+        </div>
+        <div class="text">
+          <div class="title">{{ r.title }}</div>
+          <div class="sub">{{ r.sub }}</div>
+        </div>
+      </div>
+       <div class="col 2 view">
+        <button>view</button>
+       </div>
     </div>
   </div>
 </div>
