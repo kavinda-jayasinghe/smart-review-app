@@ -4,11 +4,11 @@ import { Observable } from 'rxjs';
 import { API_BASE_URL, TEST_JWT_TOKEN } from '../../../shared/utility/constant';
 import { MessageDetails } from '../../../shared/utility/MessageDetails';
 import { map } from 'rxjs/operators'; // ADD THIS
-import { UserSuggestion } from '../../../shared/utility/UserSuggestion';
 import { APIResponse } from '../../../shared/utility/APIResponse';
 import { MessageUser } from '../../../shared/utility/MessageUser';
 import { MessageUserDto } from '../../../shared/utility/MessageUserDto';
 import { MessageResponse } from '../../../shared/utility/MessageResponse';
+import { UserSuggestion } from '../../../shared/utility/UserSuggestion';
 
 @Injectable({
   providedIn: 'root'

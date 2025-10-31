@@ -1,59 +1,84 @@
-// src/app/components/messages/messages.component.ts
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TeacherService } from '../../services/teacher.service';
-import { MessageDetails } from '../../../../shared/utility/MessageDetails';
-import { UserSuggestion } from '../../../../shared/utility/UserSuggestion';
-import { MessageUser } from '../../../../shared/utility/MessageUser';
-import { MessageResponse } from '../../../../shared/utility/MessageResponse';
+import { CommonModule } from '@angular/common';  // THIS LINE IS REQUIRED
+interface Message {
+  id: number;
+  senderId: number;
+  senderName: string;
+  receiverId: number;
+  receiverName: string;
+  content: string;
+  date: string;
+  isEditing?: boolean;
+  editContent?: string;
+}
 
+interface ChatUser {
+  userId: number;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  profilePic: string | null;
+  lastMessageDate: string;
+}
 
+interface UserSuggestion {
+  id: number;
+  fullName: string;
+  role: string;
+}
 @Component({
   selector: 'app-messages',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule,CommonModule],
   templateUrl: './messages.component.html',
   styleUrl: './messages.component.scss'
 })
-export class MessagesComponent implements OnInit {
-searchTerm = '';
+export class MessagesComponent {
+private readonly currentUser = { id: 1, fullName: 'You (John)' };
+
+  // UI State
+  searchTerm = '';
   content = '';
-  selectedChatUser: MessageUser | null = null;
-  conversationUsers: MessageUser[] = [];
+  selectedChatUser: ChatUser | null = null;
+  conversationUsers: ChatUser[] = [];
   filteredSuggestions: UserSuggestion[] = [];
-  private allUsers: UserSuggestion[] = [];
+  messages: Message[] = [];
 
-  // Chat Messages
-  messages: MessageResponse[] = [];
+  // Hard-coded data
+  private allUsers: UserSuggestion[] = [
+    { id: 2, fullName: 'Nimal Perera', role: 'TEACHER' },
+    { id: 3, fullName: 'Sithmi W.', role: 'STUDENT' },
+    { id: 4, fullName: 'Kavindu Silva', role: 'STUDENT' },
+    { id: 5, fullName: 'Chalana F.', role: 'ADMIN' }
+  ];
 
-  // Current User
-  private readonly currentUser = { id: 1, fullName: 'John Doe' } as const;
-
-  constructor(private teacherService: TeacherService) {}
+  private hardCodedChats: { [key: number]: Message[] } = {
+    2: [
+      { id: 1, senderId: 2, senderName: 'Nimal Perera', receiverId: 1, receiverName: 'You', content: 'Hello!', date: '2025-10-31T10:00:00Z' },
+      { id: 2, senderId: 1, senderName: 'You', receiverId: 2, receiverName: 'Nimal Perera', content: 'Hi Nimal!', date: '2025-10-31T10:01:00Z' }
+    ],
+    3: [
+      { id: 3, senderId: 3, senderName: 'Sithmi W.', receiverId: 1, receiverName: 'You', content: 'Assignment done?', date: '2025-10-30T09:00:00Z' }
+    ]
+  };
 
   ngOnInit(): void {
     this.loadConversationUsers();
-    this.loadAllUsersForSearch();
   }
 
-  ngOnDestroy(): void {}
-
-  // Load conversation list
+  // Load conversation list from hard-coded data
   private loadConversationUsers(): void {
-    this.teacherService.getConversationUsers(this.currentUser.id).subscribe({
-      next: (users) => {
-        this.conversationUsers = users;
-      }
-    });
-  }
-
-  // Load all users for search
-  private loadAllUsersForSearch(): void {
-    this.teacherService.getAllUsers().subscribe({
-      next: (users) => {
-        this.allUsers = users;
-      }
+    this.conversationUsers = this.allUsers.map(user => {
+      const lastMsg = this.hardCodedChats[user.id]?.[this.hardCodedChats[user.id].length - 1];
+      return {
+        userId: user.id,
+        firstName: user.fullName.split(' ')[0],
+        lastName: user.fullName.split(' ').slice(1).join(' '),
+        fullName: user.fullName,
+        profilePic: null,
+        lastMessageDate: lastMsg?.date || new Date().toISOString()
+      };
     });
   }
 
@@ -71,20 +96,17 @@ searchTerm = '';
     this.filteredSuggestions = [];
   }
 
-  // Open Chat → Load Messages
+  // Open Chat
   openChatWith(userId: number, fullName: string): void {
     const existing = this.conversationUsers.find(u => u.userId === userId);
     if (existing) {
       this.selectedChatUser = existing;
     } else {
-      const nameParts = fullName.trim().split(/\s+/);
-      const firstName = nameParts[0] || 'Unknown';
-      const lastName = nameParts.slice(1).join(' ') || '';
-
-      const newUser: MessageUser = {
+      const nameParts = fullName.split(' ');
+      const newUser: ChatUser = {
         userId,
-        firstName,
-        lastName,
+        firstName: nameParts[0],
+        lastName: nameParts.slice(1).join(' '),
         fullName,
         profilePic: null,
         lastMessageDate: new Date().toISOString()
@@ -93,53 +115,64 @@ searchTerm = '';
       this.selectedChatUser = newUser;
     }
 
-    // LOAD CHAT HISTORY
-    this.loadChatMessages(userId);
-    this.sortConversationList();
-  }
-
-  // Load messages between currentUser and partner
-  private loadChatMessages(partnerId: number): void {
-    this.teacherService.getChatMessages(this.currentUser.id, partnerId).subscribe({
-      next: (msgs) => {
-        this.messages = msgs;
-        this.scrollToBottom();
-      },
-      error: () => alert('Failed to load messages')
-    });
+    // Load messages
+    this.messages = [...(this.hardCodedChats[userId] || [])];
+    this.scrollToBottom();
   }
 
   // Send Message
   send(): void {
     if (!this.selectedChatUser || !this.content.trim()) return;
 
-    const payload: MessageDetails = {
+    const newMsg: Message = {
+      id: Date.now(),
       senderId: this.currentUser.id,
       senderName: this.currentUser.fullName,
       receiverId: this.selectedChatUser.userId,
       receiverName: this.selectedChatUser.fullName,
-      content: this.content.trim()
+      content: this.content.trim(),
+      date: new Date().toISOString()
     };
 
-    this.teacherService.send(payload).subscribe({
-      next: () => {
-        const newMsg: MessageResponse = {
-          id: Date.now(),
-          senderId: this.currentUser.id,
-          senderName: this.currentUser.fullName,
-          receiverId: this.selectedChatUser!.userId,
-          receiverName: this.selectedChatUser!.fullName,
-          content: this.content.trim(),
-          date: new Date().toISOString()
-        };
+    this.messages.push(newMsg);
+    this.hardCodedChats[this.selectedChatUser.userId] = this.messages;
+    this.selectedChatUser.lastMessageDate = newMsg.date;
+    this.sortConversationList();
+    this.content = '';
+    this.scrollToBottom();
+  }
 
-        this.messages.push(newMsg);
-        this.content = '';
-        this.selectedChatUser!.lastMessageDate = newMsg.date;
-        this.sortConversationList();
-        this.scrollToBottom();
+  // Edit Message
+  editMessage(msg: Message): void {
+    msg.isEditing = true;
+    msg.editContent = msg.content;
+  }
+
+  saveEdit(msg: Message): void {
+    if (msg.editContent?.trim()) {
+      msg.content = msg.editContent.trim();
+    }
+    msg.isEditing = false;
+    delete msg.editContent;
+  }
+
+  cancelEdit(msg: Message): void {
+    msg.isEditing = false;
+    delete msg.editContent;
+  }
+
+  // Delete Message
+  deleteMessage(msg: Message): void {
+    if (confirm('Delete this message?')) {
+      this.messages = this.messages.filter(m => m.id !== msg.id);
+      this.hardCodedChats[this.selectedChatUser!.userId] = this.messages;
+      if (this.messages.length === 0) {
+        this.selectedChatUser!.lastMessageDate = new Date().toISOString();
+      } else {
+        this.selectedChatUser!.lastMessageDate = this.messages[this.messages.length - 1].date;
       }
-    });
+      this.sortConversationList();
+    }
   }
 
   // Helpers
@@ -151,13 +184,12 @@ searchTerm = '';
 
   private scrollToBottom(): void {
     setTimeout(() => {
-      const chatBox = document.querySelector('.chat-box');
-      if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+      const el = document.querySelector('.chat-box');
+      if (el) el.scrollTop = el.scrollHeight;
     }, 100);
   }
 
-  // UI Helper
-  isSentByMe(msg: MessageResponse): boolean {
+  isSentByMe(msg: Message): boolean {
     return msg.senderId === this.currentUser.id;
   }
 }
