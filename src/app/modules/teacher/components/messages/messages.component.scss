@@ -1,0 +1,11 @@
+/* src/app/components/messages/messages.component.scss */
+.cursor-pointer {
+  cursor: pointer;
+}
+.chat-item:hover {
+  background-color: #f8f9fa;
+}
+.dropdown-menu {
+  max-height: 200px;
+  overflow-y: auto;
+}

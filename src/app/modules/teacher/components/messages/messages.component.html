@@ -1,1 +1,72 @@
-<p>messages works!</p>
+<!-- src/app/components/messages/messages.component.html -->
+<div class="container-fluid">
+  <div class="row">
+
+    <!-- LEFT: Conversation List + Search -->
+    <div class="col-md-4 border-end p-3" style="height: 80vh; overflow-y: auto;">
+      <h5>Messages</h5>
+
+      <!-- Search -->
+      <div class="mb-3 position-relative">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search users..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearchInput()"
+          autocomplete="off"
+        />
+        <div *ngIf="filteredSuggestions.length" class="dropdown-menu show w-100">
+          <button
+            *ngFor="let u of filteredSuggestions"
+            class="dropdown-item"
+            (click)="selectFromSearch(u)"
+          >
+            {{ u.fullName }} <small class="text-muted">({{ u.role }})</small>
+          </button>
+        </div>
+      </div>
+
+      <!-- Conversation List -->
+      <div *ngFor="let chat of conversationUsers"
+           class="d-flex align-items-center p-2 border-bottom cursor-pointer"
+           (click)="selectedChatUser = chat">
+        <img [src]="chat.profilePic || 'assets/default-avatar.png'"
+             class="rounded-circle me-2" width="40" height="40">
+        <div class="flex-grow-1">
+          <strong>{{ chat.fullName }}</strong>
+          <small class="text-muted d-block">
+            {{ chat.lastMessageDate | date:'short' }}
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Chat Window -->
+    <div class="col-md-8 p-3" *ngIf="selectedChatUser as user; else noChat">
+      <div class="d-flex align-items-center mb-3">
+        <img [src]="user.profilePic || 'assets/default-avatar.png'"
+             class="rounded-circle me-2" width="50" height="50">
+        <h5 class="mb-0">{{ user.fullName }}</h5>
+      </div>
+
+      <div class="chat-box border p-3 mb-3" style="height: 50vh; overflow-y: auto;">
+        <p class="text-muted">Start typing to send a message.</p>
+      </div>
+
+      <div class="input-group">
+        <textarea class="form-control" [(ngModel)]="content" rows="2"
+                  placeholder="Type a message..."></textarea>
+        <button class="btn btn-primary" (click)="send()"
+                [disabled]="!content.trim()">Send</button>
+      </div>
+    </div>
+
+    <ng-template #noChat>
+      <div class="col-md-8 d-flex align-items-center justify-content-center text-muted" style="height: 80vh;">
+        Select a conversation or search for a user to start chatting.
+      </div>
+    </ng-template>
+
+  </div>
+</div>

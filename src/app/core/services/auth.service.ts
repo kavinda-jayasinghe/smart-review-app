@@ -1,5 +1,9 @@
-import { Injectable, signal } from '@angular/core';
-
+import { computed, Injectable, signal } from '@angular/core';
+interface CurrentUser {
+  id: number;
+  fullName: string;
+  roles: string[];
+}
 function readInitialToken(): string | null {
   try {
     const t = localStorage.getItem('token');
@@ -15,8 +19,12 @@ function readInitialToken(): string | null {
   return null;
 }
 
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+
+  
+
   private _token = signal<string | null>(typeof localStorage !== 'undefined' ? readInitialToken() : null);
   token() { return this._token(); }
   isLoggedIn() { return !!this._token(); }
