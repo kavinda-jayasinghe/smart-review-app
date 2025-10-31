@@ -1,0 +1,97 @@
+:root {
+  --ink:#111827;
+  --muted:#6b7280;
+  --line:#e5e7eb;
+  --bg:#f7f7f8;
+  --card:#ffffff;
+}
+
+.page {
+  background: var(--bg);
+  // padding: 2px 4px;
+  max-width: 100%;
+  margin: 0 auto;
+  color: var(--ink);
+}
+
+.title { font-size: 32px; font-weight: 800; margin: 6px 0 16px; }
+.section-h { font-size: 18px; font-weight: 800; margin: 16px 0 12px; }
+
+/* summary cards */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px 18px;
+}
+.card .label { color: var(--muted); margin-bottom: 8px; }
+.card .value { font-size: 28px; font-weight: 800; }
+
+/* glance list */
+.list {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 6px 0;
+}
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 6px;
+  gap: 5px;
+}
+.row + .row { border-top: 1px solid #eef0f3; }
+
+.left { display: flex; align-items: center; gap: 12px; }
+
+.square {
+  width: 42px; height: 42px; border-radius: 12px;
+  background: #f3f4f6; border: 1px solid #e7e9ee;
+  display: grid; place-items: center;
+}
+.square.cassign { background: #f7f7ff; }
+.square.cbook { background: #f7f9ff; }
+
+.text .title { font-weight: 500; }
+.text .sub { color: var(--muted); font-size: 12px; }
+
+.action { color: #1f2937; font-weight: 600; text-decoration: none; }
+.action:hover { text-decoration: underline; }
+
+/* minimal glyphs to avoid external icon libs */
+.glyph { width: 18px; height: 18px; position: relative; }
+.g-class::before, .g-class::after {
+  content: ""; position: absolute; left: 0; right: 0;
+  border: 2px solid #9aa0a6; border-radius: 3px;
+}
+.g-class::before { top: 0; height: 11px; }
+.g-class::after  { bottom: 0; height: 3px; }
+
+.g-assignment {
+  border: 2px solid #9aa0a6; border-radius: 3px;
+}
+.g-assignment::after {
+  content:""; position:absolute; left:3px; right:3px; top:6px; height:2px; background:#9aa0a6;
+}
+
+.g-bookmark {
+  border-left: 10px solid #9aa0a6;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  height: 0; width: 0;
+}
+
+/* responsive */
+@media (max-width: 960px) { .metrics { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) {
+  .page { padding: 16px; }
+  .metrics { grid-template-columns: 1fr; }
+  .title { font-size: 26px; }
+}
